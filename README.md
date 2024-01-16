@@ -1,1 +1,1 @@
-# confrence-room
+# conference-room
