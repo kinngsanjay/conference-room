@@ -2,6 +2,7 @@ package app.conferenceroom.facade.service;
 
 import app.conferenceroom.facade.dto.MaintenanceTimeRange;
 import app.conferenceroom.facade.dto.MeetingTimeRange;
+import app.conferenceroom.facade.enums.ErrorCode;
 import app.conferenceroom.infra.exception.ConferenceRoomException;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,13 +19,12 @@ public class MaintenanceService {
 
     private List<MaintenanceTimeRange> timings;
 
-    public boolean overlaps(MeetingTimeRange otherTimeRange) {
+    public void checkForOverlaps(MeetingTimeRange otherTimeRange) {
         for(MaintenanceTimeRange timeRange : timings) {
             if(LocalDateTime.of(LocalDate.now(), timeRange.getStartTime()).isBefore(otherTimeRange.getEndTime()) &&
                     LocalDateTime.of(LocalDate.now(), timeRange.getEndTime()).isAfter(otherTimeRange.getStartTime())) {
-                throw new ConferenceRoomException("ROOM_UNDER_MAINTENANCE", "Select time range overlaps Maintenance TIme");
+                throw new ConferenceRoomException(ErrorCode.ROOM_UNDER_MAINTENANCE);
             }
         }
-        return false;
     }
 }

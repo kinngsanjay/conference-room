@@ -14,7 +14,7 @@ spring:
       ddl-auto: none
 logging:
   level:
-    org.springframework: DEBUG
+    org.springframework: INFO
 maintenance:
   timings:
     - startTime: "09:00"

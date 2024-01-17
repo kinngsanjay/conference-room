@@ -7,12 +7,13 @@ import app.conferenceroom.facade.dto.RoomDto;
 import app.conferenceroom.infra.response.Response;
 import app.conferenceroom.infra.response.ResponseStatus;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/rooms")
+@RequestMapping("/api/conference-room")
 public class RoomController {
     @Autowired
     private RoomService roomService;
@@ -26,8 +27,10 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{name}")
-    public RoomDto getRoomByName(@PathVariable String name) {
-        return roomService.getRoomByName(name);
+    @GetMapping
+    public ResponseEntity<Response<RoomDto>> getRoomByName(@RequestParam String name) {
+        Response<RoomDto> response = Response.<RoomDto>builder()
+                .status(ResponseStatus.SUCCESS).data(roomService.getRoomByName(name)).build();
+        return ResponseEntity.ok(response);
     }
 }

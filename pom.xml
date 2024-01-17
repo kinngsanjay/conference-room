@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>app.conferenceroom</groupId>
-	<artifactId>confeerence-room</artifactId>
+	<artifactId>conference-room</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>conference-room</name>
 	<description>Project to book meeting room</description>

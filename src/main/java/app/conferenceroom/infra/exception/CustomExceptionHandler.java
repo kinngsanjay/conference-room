@@ -4,10 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
@@ -15,7 +19,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleValidationException(BindException ex) {
-        String errorMessage = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+        String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         ErrorResponse errorResponse = new ErrorResponse("error", HttpStatus.BAD_REQUEST.getReasonPhrase(), errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

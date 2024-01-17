@@ -1,5 +1,6 @@
 package app.conferenceroom.infra.exception;
 
+import app.conferenceroom.facade.enums.ErrorCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,8 +15,8 @@ public class ConferenceRoomException extends RuntimeException {
         this.errorCode = errorCode;
         this.message = message;
     }
-    public ConferenceRoomException(String errorCode, String message) {
+    public ConferenceRoomException(ErrorCode code) {
         super();
-        init(errorCode, message);
+        init(code.getErrorCode(), code.getMessage());
     }
 }
