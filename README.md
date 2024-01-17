@@ -1,6 +1,12 @@
 # Conference Room Booking Micro-Service
 This API allows you to manage and book conference rooms in your organization. It provides endpoints to check room availability, fetch room details, book a room, and retrieve bookings within a specific time slot.
 
+## Technology Stack
+- **Java 17**
+- **Spring Boot 3**
+- **Maven**
+- **H2 In-memory Database**
+
 ## Table of Contents
 - [Database](#database)
 - [Maintenance Timings](#maintenance-timings)
