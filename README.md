@@ -7,6 +7,9 @@ This API allows you to manage and book conference rooms in your organization. It
 - **Maven**
 - **H2 In-memory Database**
 
+## Steps to build the app and run
+Once the code is on your local branch, please run the maven command `mvn clean install`. It will build the application into your local system and then you can start the application by simply executing the main function from `ConferenceRoomApplication.java` file inside `src/main/java`
+
 ## Table of Contents
 - [Database](#database)
 - [Maintenance Timings](#maintenance-timings)
