@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
@@ -28,6 +29,12 @@ public class CustomExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAppException(ConferenceRoomException ex) {
         ErrorResponse errorResponse = new ErrorResponse("error", ex.getErrorCode(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        ErrorResponse errorMessage = new ErrorResponse("error","INVALID_INPUT","Incorrect date format. Please use the format 'yyyy-MM-dd HH:mm'.");
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     @Getter @Setter

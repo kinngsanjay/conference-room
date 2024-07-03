@@ -7,7 +7,6 @@ import app.conferenceroom.facade.dto.RoomDto;
 import app.conferenceroom.infra.response.Response;
 import app.conferenceroom.infra.response.ResponseStatus;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

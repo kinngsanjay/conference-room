@@ -19,9 +19,8 @@ public class ListMapToMaintenanceTimeRangeConverter implements Converter<List<Ma
     }
 
     private MaintenanceTimeRange convertSingle(Map<String, String> source) {
-        MaintenanceTimeRange timeRange = new MaintenanceTimeRange();
-        timeRange.setStartTime(LocalTime.parse(source.get("startTime")));
-        timeRange.setEndTime(LocalTime.parse(source.get("endTime")));
-        return timeRange;
+       return new MaintenanceTimeRange(
+                LocalTime.parse(source.get("startTime")),
+                LocalTime.parse(source.get("endTime")));
     }
 }

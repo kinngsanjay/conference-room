@@ -50,22 +50,22 @@ public class MeetingTimeRangeValidator implements ConstraintValidator<ValidMeeti
 
     private boolean isStartTimeValid(MeetingTimeRange meetingTimeRange) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        return meetingTimeRange.getStartTime().isAfter(currentDateTime);
+        return meetingTimeRange.startTime().isAfter(currentDateTime);
     }
 
     public boolean isEndTimeValid(MeetingTimeRange meetingTimeRange) {
-        return meetingTimeRange.getEndTime().isAfter(meetingTimeRange.getStartTime());
+        return meetingTimeRange.endTime().isAfter(meetingTimeRange.startTime());
     }
 
     private boolean isTodayDate(MeetingTimeRange meetingTimeRange) {
         LocalDate today = LocalDate.now();
-        return meetingTimeRange.getStartTime().toLocalDate().isEqual(today) &&
-                meetingTimeRange.getEndTime().toLocalDate().isEqual(today);
+        return meetingTimeRange.startTime().toLocalDate().isEqual(today) &&
+                meetingTimeRange.endTime().toLocalDate().isEqual(today);
     }
 
     private boolean correctTimeStamp(MeetingTimeRange meetingTimeRange) {
-        return meetingTimeRange.getStartTime().getSecond() == 0 && meetingTimeRange.getEndTime().getSecond() == 0 &&
-                (meetingTimeRange.getStartTime().getMinute() == 0 || meetingTimeRange.getStartTime().getMinute() % 15 == 0) &&
-                (meetingTimeRange.getEndTime().getMinute() == 0 || meetingTimeRange.getEndTime().getMinute() % 15 == 0);
+        return meetingTimeRange.startTime().getSecond() == 0 && meetingTimeRange.endTime().getSecond() == 0 &&
+                (meetingTimeRange.startTime().getMinute() == 0 || meetingTimeRange.startTime().getMinute() % 15 == 0) &&
+                (meetingTimeRange.endTime().getMinute() == 0 || meetingTimeRange.endTime().getMinute() % 15 == 0);
     }
 }

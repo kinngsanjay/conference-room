@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
-    NO_ROOM_AVAILABLE("NO_ROOM_AVAILABLE", "No room available for this"),
+    NO_ROOM_AVAILABLE("NO_ROOM_AVAILABLE", "No room available for these booking details"),
     NO_SUCH_ROOM("NO_SUCH_ROOM", "No room exist with this name or id"),
     UNABLE_TO_BOOK_ROOM("UNABLE_TO_BOOK_ROOM", "Unable to book the room"),
     NO_BOOKING_FOUND("NO_BOOKING_FOUND", "No booking for the selected time range"),

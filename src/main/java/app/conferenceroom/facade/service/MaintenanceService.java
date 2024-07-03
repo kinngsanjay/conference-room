@@ -21,8 +21,8 @@ public class MaintenanceService {
 
     public void checkForOverlaps(MeetingTimeRange otherTimeRange) {
         for(MaintenanceTimeRange timeRange : timings) {
-            if(LocalDateTime.of(LocalDate.now(), timeRange.getStartTime()).isBefore(otherTimeRange.getEndTime()) &&
-                    LocalDateTime.of(LocalDate.now(), timeRange.getEndTime()).isAfter(otherTimeRange.getStartTime())) {
+            if(LocalDateTime.of(LocalDate.now(), timeRange.startTime()).isBefore(otherTimeRange.endTime()) &&
+                    LocalDateTime.of(LocalDate.now(), timeRange.endTime()).isAfter(otherTimeRange.startTime())) {
                 throw new ConferenceRoomException(ErrorCode.ROOM_UNDER_MAINTENANCE);
             }
         }
