@@ -15,11 +15,15 @@ spring:
 logging:
   level:
     org.springframework: INFO
-maintenance:
-  timings:
-    - startTime: "09:00"
-      endTime: "09:15"
-    - startTime: "13:00"
-      endTime: "13:15"
-    - startTime: "17:00"
-      endTime: "17:15"
+app:
+  booking:
+    min-people: 2
+    max-people: 20
+  maintenance:
+    timings:
+      - startTime: "09:00"
+        endTime: "09:15"
+      - startTime: "13:00"
+        endTime: "13:15"
+      - startTime: "17:00"
+        endTime: "17:15"

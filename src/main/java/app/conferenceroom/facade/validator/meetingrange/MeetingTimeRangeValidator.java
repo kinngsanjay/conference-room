@@ -3,20 +3,19 @@ package app.conferenceroom.facade.validator.meetingrange;
 import app.conferenceroom.facade.dto.MeetingTimeRange;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Slf4j
 public class MeetingTimeRangeValidator implements ConstraintValidator<ValidMeetingTimeRange, MeetingTimeRange> {
-
-    @Override
-    public void initialize(ValidMeetingTimeRange constraintAnnotation) {
-    }
-
-    private void addErrorMessage(ConstraintValidatorContext context, String message) {
+    private boolean addErrorMessage(ConstraintValidatorContext context, String message) {
+        log.info("MeetingTimeRangeValidator Error message: {}", message);
         context.disableDefaultConstraintViolation();
         context.buildConstraintViolationWithTemplate(message)
                 .addConstraintViolation();
+        return false;
     }
 
     @Override
@@ -29,21 +28,18 @@ public class MeetingTimeRangeValidator implements ConstraintValidator<ValidMeeti
     }
 
     private boolean validateTimeRange(MeetingTimeRange meetingTimeRange, ConstraintValidatorContext context) {
+        log.info("Validate time range: {}", meetingTimeRange);
         if(!isTodayDate(meetingTimeRange)) {
-            addErrorMessage(context, "Start and End Date should be of Today's date");
-            return false;
+            return addErrorMessage(context, "Start and End Date should be of Today's date");
         }
         if(!isStartTimeValid(meetingTimeRange)) {
-            addErrorMessage(context, "Start Time should be after current time");
-            return false;
+            return addErrorMessage(context, "Start Time should be after current time");
         }
         if(!isEndTimeValid(meetingTimeRange)) {
-            addErrorMessage(context, "End Time cannot be earlier than Start time");
-            return false;
+            return addErrorMessage(context, "End Time cannot be earlier than Start time");
         }
         if(!correctTimeStamp(meetingTimeRange)) {
-            addErrorMessage(context, "Entered Time is not suitable input");
-            return false;
+            return addErrorMessage(context, "Entered Time is not suitable input");
         }
         return true;
     }

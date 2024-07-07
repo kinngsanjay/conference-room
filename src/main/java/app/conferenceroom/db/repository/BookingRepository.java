@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
@@ -16,4 +17,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "(b.startTime < :endTime AND b.endTime > :startTime)")
     List<Booking> findAllBookings(@Param("startTime") LocalDateTime startTime,
                                   @Param("endTime") LocalDateTime endTime);
+
+    Optional<Booking> findByRoomIdAndStartTimeAndEndTime(Long roomId, LocalDateTime startTime, LocalDateTime endTIme);
 }
