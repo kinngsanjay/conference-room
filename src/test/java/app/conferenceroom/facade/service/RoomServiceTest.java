@@ -8,20 +8,17 @@ import app.conferenceroom.infra.exception.ConferenceRoomException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
 @SpringBootTest
 public class RoomServiceTest {
     @Autowired
     RoomService roomService;
 
-    private MeetingTimeRange getMeetingTimeRange(LocalDateTime startTime) {
+    private MeetingTimeRange getMeetingTimeRange(LocalTime startTime) {
         return new MeetingTimeRange(startTime, startTime.plusMinutes(15));
     }
 
@@ -41,7 +38,7 @@ public class RoomServiceTest {
 
     @Test
     public void testGetRoomByName1() {
-        LocalDateTime time = LocalDateTime.now().with(LocalTime.of(14, 0, 0));
+        LocalTime time = LocalTime.of(14, 0, 0);
         BookingDto bookingDto =  new BookingDto(
                 4L, new RoomAvailabilityDto(getMeetingTimeRange(time), 12));
         assertNotNull(roomService.getAvailableRooms(bookingDto, false).getAvailableRooms());

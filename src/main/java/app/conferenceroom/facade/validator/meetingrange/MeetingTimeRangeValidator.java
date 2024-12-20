@@ -5,8 +5,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Slf4j
 public class MeetingTimeRangeValidator implements ConstraintValidator<ValidMeetingTimeRange, MeetingTimeRange> {
@@ -29,9 +28,6 @@ public class MeetingTimeRangeValidator implements ConstraintValidator<ValidMeeti
 
     private boolean validateTimeRange(MeetingTimeRange meetingTimeRange, ConstraintValidatorContext context) {
         log.info("Validate time range: {}", meetingTimeRange);
-        if(!isTodayDate(meetingTimeRange)) {
-            return addErrorMessage(context, "Start and End Date should be of Today's date");
-        }
         if(!isStartTimeValid(meetingTimeRange)) {
             return addErrorMessage(context, "Start Time should be after current time");
         }
@@ -45,7 +41,7 @@ public class MeetingTimeRangeValidator implements ConstraintValidator<ValidMeeti
     }
 
     private boolean isStartTimeValid(MeetingTimeRange meetingTimeRange) {
-        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalTime currentDateTime = LocalTime.now();
         return meetingTimeRange.startTime().isAfter(currentDateTime);
     }
 
@@ -53,11 +49,6 @@ public class MeetingTimeRangeValidator implements ConstraintValidator<ValidMeeti
         return meetingTimeRange.endTime().isAfter(meetingTimeRange.startTime());
     }
 
-    private boolean isTodayDate(MeetingTimeRange meetingTimeRange) {
-        LocalDate today = LocalDate.now();
-        return meetingTimeRange.startTime().toLocalDate().isEqual(today) &&
-                meetingTimeRange.endTime().toLocalDate().isEqual(today);
-    }
 
     private boolean correctTimeStamp(MeetingTimeRange meetingTimeRange) {
         return meetingTimeRange.startTime().getSecond() == 0 && meetingTimeRange.endTime().getSecond() == 0 &&

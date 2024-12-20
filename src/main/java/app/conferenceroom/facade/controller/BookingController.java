@@ -1,6 +1,5 @@
 package app.conferenceroom.facade.controller;
 
-import app.conferenceroom.facade.dto.CancelDto;
 import app.conferenceroom.facade.dto.MeetingTimeRange;
 import app.conferenceroom.facade.service.BookingService;
 import app.conferenceroom.facade.dto.BookingDto;
@@ -21,7 +20,7 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
-    @PostMapping("/book")
+    @PostMapping
     public ResponseEntity<Response<String>> bookRoom(@RequestBody @Valid BookingDto booking) {
         log.info("BookingController - bookRoom - STARTED");
         Response<String> response = Response.<String>builder()
@@ -31,18 +30,18 @@ public class BookingController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
+    @PostMapping("/search")
     public List<BookingDto> getBookingsByTime(@RequestBody @Valid MeetingTimeRange timeRange) {
         log.info("BookingController - getBookingsByTime: {}", timeRange);
         return bookingService.getBookingsByTime(timeRange);
     }
 
-    @DeleteMapping("/cancel")
-    public ResponseEntity<Response<String>> cancelBooking(@RequestBody @Valid CancelDto cancelDto) {
+    @DeleteMapping("/cancel/{bookingId}")
+    public ResponseEntity<Response<String>> cancelBooking(@PathVariable Long bookingId) {
         log.info("BookingController - cancelBooking - STARTED");
         Response<String> response = Response.<String>builder()
                 .status(ResponseStatus.SUCCESS)
-                .data(bookingService.cancelBooking(cancelDto)).build();
+                .data(bookingService.cancelBooking(bookingId)).build();
         log.info("BookingController - cancelBooking - ENDED");
         return ResponseEntity.ok(response);
     }

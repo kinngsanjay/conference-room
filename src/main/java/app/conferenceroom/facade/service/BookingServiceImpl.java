@@ -3,7 +3,6 @@ package app.conferenceroom.facade.service;
 import app.conferenceroom.db.entity.Booking;
 import app.conferenceroom.db.repository.BookingRepository;
 import app.conferenceroom.facade.dto.BookingDto;
-import app.conferenceroom.facade.dto.CancelDto;
 import app.conferenceroom.facade.dto.MeetingTimeRange;
 import app.conferenceroom.facade.enums.ErrorCode;
 import app.conferenceroom.infra.exception.ConferenceRoomException;
@@ -44,16 +43,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public String cancelBooking(CancelDto cancelDto) {
-        log.info("cancelDto started, cancelDto: {}", cancelDto);
-        Optional<Booking> booking = bookingRepository.findByRoomIdAndStartTimeAndEndTime(cancelDto.roomId(),
-                cancelDto.timeRange().startTime(), cancelDto.timeRange().endTime());
-        log.info("Result booking: {}", booking);
-        if(booking.isPresent()) {
-            bookingRepository.deleteById(booking.get().getBookingId());
-        } else {
-            throw new ConferenceRoomException(ErrorCode.NO_BOOKING_FOUND);
-        }
+    public String cancelBooking(Long bookingId) {
+        log.info("Cancelling room started for bookingId: {}", bookingId);
+        bookingRepository.findByBookingId(bookingId).orElseThrow(() -> new ConferenceRoomException(ErrorCode.NO_BOOKING_FOUND));;
+        bookingRepository.deleteById(bookingId);
         return "Conference Room Booking Cancelled";
     }
 }

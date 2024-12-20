@@ -8,21 +8,18 @@ import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
 @SpringBootTest
 public class MeetingTimeRangeValidatorTest {
 
     private Validator validator;
 
-    private MeetingTimeRange getMeetingTimeRange(LocalDateTime startTime) {
+    private MeetingTimeRange getMeetingTimeRange(LocalTime startTime) {
         return new MeetingTimeRange(startTime, startTime.plusMinutes(15));
     }
     @BeforeEach
@@ -40,32 +37,32 @@ public class MeetingTimeRangeValidatorTest {
 
     @Test
     public void testIsValidWithTimeNotSuitable() {
-        LocalDateTime startTime = LocalDateTime.now().with(LocalTime.of(21, 0, 15));
-        LocalDateTime endTime = LocalDateTime.now().with(LocalTime.of(22, 0, 0));
+        LocalTime startTime = LocalTime.of(21, 0, 15);
+        LocalTime endTime = LocalTime.of(22, 0, 0);
         MeetingTimeRange meetingTimeRange = new MeetingTimeRange(startTime, endTime);
 
         Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
         assertFalse(violations.isEmpty());
         assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
 
-        startTime = LocalDateTime.now().with(LocalTime.of(21, 15, 0));
-        endTime = LocalDateTime.now().with(LocalTime.of(22, 15, 15));
+        startTime = LocalTime.of(21, 15, 0);
+        endTime = LocalTime.of(22, 15, 15);
         meetingTimeRange = new MeetingTimeRange(startTime, endTime);
 
         violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
         assertFalse(violations.isEmpty());
         assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
 
-        startTime = LocalDateTime.now().with(LocalTime.of(21, 16, 0));
-        endTime = LocalDateTime.now().with(LocalTime.of(22, 15, 0));
+        startTime = LocalTime.of(21, 16, 0);
+        endTime = LocalTime.of(22, 15, 0);
         meetingTimeRange = new MeetingTimeRange(startTime, endTime);
 
         violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
         assertFalse(violations.isEmpty());
         assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
 
-        startTime = LocalDateTime.now().with(LocalTime.of(21, 15, 0));
-        endTime = LocalDateTime.now().with(LocalTime.of(22, 16, 0));
+        startTime = LocalTime.of(21, 15, 0);
+        endTime = LocalTime.of(22, 16, 0);
         meetingTimeRange = new MeetingTimeRange(startTime, endTime);
 
         violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
@@ -75,7 +72,7 @@ public class MeetingTimeRangeValidatorTest {
 
     @Test
     public void testIsValidWithValidMeetingTimeRange() {
-        LocalDateTime now = LocalDateTime.now().plusMinutes(5);
+        LocalTime now = LocalTime.now().plusMinutes(5);
         MeetingTimeRange meetingTimeRange = new MeetingTimeRange(now, now.plusMinutes(30));
 
         Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
@@ -83,28 +80,9 @@ public class MeetingTimeRangeValidatorTest {
     }
 
     @Test
-    public void testValidateTimeRangeWithInvalidDate() {
-        LocalDateTime startTime = LocalDateTime.now().plusDays(1);
-        LocalDateTime endTime = startTime.plusMinutes(30);
-        MeetingTimeRange meetingTimeRange = new MeetingTimeRange(startTime, endTime);
-
-        Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
-        assertFalse(violations.isEmpty());
-        assertEquals("Start and End Date should be of Today's date", violations.iterator().next().getMessage());
-
-        startTime = LocalDateTime.now();
-        endTime = startTime.plusDays(1);
-        meetingTimeRange = new MeetingTimeRange(startTime, endTime);
-
-        violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
-        assertFalse(violations.isEmpty());
-        assertEquals("Start and End Date should be of Today's date", violations.iterator().next().getMessage());
-    }
-
-    @Test
     public void testValidateTimeRangeWithInvalidStartTime() {
-        LocalDateTime startTime = LocalDateTime.now().minusMinutes(10);
-        LocalDateTime endTime = startTime.plusMinutes(30);
+        LocalTime startTime = LocalTime.now().minusMinutes(10);
+        LocalTime endTime = startTime.plusMinutes(30);
         MeetingTimeRange meetingTimeRange = new MeetingTimeRange(startTime, endTime);
 
         Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
@@ -114,15 +92,15 @@ public class MeetingTimeRangeValidatorTest {
 
     @Test
     public void testValidateTimeRangeWithCorrectTime() {
-        LocalDateTime startTime = LocalDateTime.now().with(LocalTime.of(21, 0, 0));
-        LocalDateTime endTime = LocalDateTime.now().with(LocalTime.of(22, 0, 0));
+        LocalTime startTime = LocalTime.of(21, 0, 0);
+        LocalTime endTime = LocalTime.of(22, 0, 0);
         MeetingTimeRange meetingTimeRange = new MeetingTimeRange(startTime, endTime);
 
         Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
         assertTrue(violations.isEmpty());
 
-        startTime = LocalDateTime.now().with(LocalTime.of(21, 15, 0));
-        endTime = LocalDateTime.now().with(LocalTime.of(22, 15, 0));
+        startTime = LocalTime.of(21, 15, 0);
+        endTime = LocalTime.of(22, 15, 0);
         meetingTimeRange = new MeetingTimeRange(startTime, endTime);
 
         violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
@@ -131,8 +109,8 @@ public class MeetingTimeRangeValidatorTest {
 
     @Test
     public void testValidateTimeRangeWithInvalidEndTime() {
-        LocalDateTime startTime = LocalDateTime.now().plusMinutes(10);
-        LocalDateTime endTime = startTime.minusMinutes(5);
+        LocalTime startTime = LocalTime.now().plusMinutes(10);
+        LocalTime endTime = startTime.minusMinutes(5);
         MeetingTimeRange meetingTimeRange = new MeetingTimeRange(startTime, endTime);
 
         Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
@@ -142,8 +120,8 @@ public class MeetingTimeRangeValidatorTest {
 
     @Test
     public void testValidateTimeRangeWithInvalidTimestamp() {
-        LocalDateTime startTime = LocalDateTime.now().withMinute(14).withSecond(30);
-        LocalDateTime endTime = startTime.plusMinutes(45);
+        LocalTime startTime = LocalTime.now().withMinute(14).withSecond(30);
+        LocalTime endTime = startTime.plusMinutes(45);
         MeetingTimeRange meetingTimeRange = new MeetingTimeRange(startTime.minusHours(1), endTime);
 
         Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
@@ -152,7 +130,7 @@ public class MeetingTimeRangeValidatorTest {
     }
     @Test
     public void testIsEndTimeValid() {
-        LocalDateTime startTime = LocalDateTime.now().plusMinutes(10);
+        LocalTime startTime = LocalTime.now().plusMinutes(10);
         MeetingTimeRange meetingTimeRange = new MeetingTimeRange(startTime, startTime.plusMinutes(30));
 
         boolean result = new MeetingTimeRangeValidator().isEndTimeValid(meetingTimeRange);

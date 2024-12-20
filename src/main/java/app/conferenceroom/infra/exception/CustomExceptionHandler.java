@@ -37,7 +37,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         log.info("handleHttpMessageNotReadable Error : {}", ex.getMessage());
         ErrorResponse errorMessage = new ErrorResponse("error", "INVALID_INPUT",
-                "Incorrect date format. Please use the format 'yyyy-MM-dd HH:mm'.");
+                "Incorrect time format. Please use the format 'HH:mm'.");
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 

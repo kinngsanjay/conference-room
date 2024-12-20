@@ -1,7 +1,6 @@
 package app.conferenceroom.facade.service;
 
 import app.conferenceroom.facade.dto.BookingDto;
-import app.conferenceroom.facade.dto.CancelDto;
 import app.conferenceroom.facade.dto.MeetingTimeRange;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +12,5 @@ public interface BookingService {
 
     List<BookingDto> getBookingsByTime(MeetingTimeRange timeRange);
 
-    String cancelBooking(CancelDto cancelDto);
+    String cancelBooking(Long bookingId);
 }

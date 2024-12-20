@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "BOOKING")
@@ -18,9 +18,9 @@ public class Booking {
     @Column(name = "ROOMID")
     private Long roomId;
     @Column(name = "START_TIME")
-    private LocalDateTime startTime;
+    private LocalTime startTime;
     @Column(name = "END_TIME")
-    private LocalDateTime endTime;
+    private LocalTime endTime;
     @Column(name = "NUMBER_OF_PEOPLE")
     private int numberOfPeople;
 }

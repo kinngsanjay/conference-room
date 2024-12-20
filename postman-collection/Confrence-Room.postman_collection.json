@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "9cf68ed8-c0a6-484f-9caa-5899c093fb5c",
+		"name": "Confrence-Room",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27476498"
+	},
+	"item": [
+		{
+			"name": "room",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"timeRange\": {\n        \"startTime\": \"2024-01-17 17:15:00\",\n        \"endTime\": \"2024-01-17 17:30:00\"\n    },\n    \"numberOfPeople\": 11\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/conference-room",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"conference-room"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "room-detail",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"timeRange\": {\n        \"startTime\": \"2024-01-16 17:00:00\",\n        \"endTime\": \"2024-01-16 18:00:00\"\n    },\n    \"numberOfPeople\": 7\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/conference-room?name=Inspire",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"conference-room"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Inspire"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "book-room",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"roomId\": 3,\n    \"timeRange\": {\n        \"startTime\": \"2024-07-01 18:00\",\n        \"endTime\": \"2024-07-01 19:45\"\n    },\n    \"numberOfPeople\": 11\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/conference-bookings/book",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"conference-bookings",
+						"book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "bookings",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"startTime\": \"2024-01-17 17:01:00\",\n    \"endTime\": \"2024-01-17 19:30:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/conference-bookings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"conference-bookings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cancel",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"startTime\": \"2024-01-17 17:01:00\",\n    \"endTime\": \"2024-01-17 19:30:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/conference-bookings/cancel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"conference-bookings",
+						"cancel"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
