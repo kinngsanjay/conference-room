@@ -7,13 +7,13 @@
 	},
 	"item": [
 		{
-			"name": "room",
+			"name": "SearchBestRoom",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"timeRange\": {\n        \"startTime\": \"2024-01-17 17:15:00\",\n        \"endTime\": \"2024-01-17 17:30:00\"\n    },\n    \"numberOfPeople\": 11\n}",
+					"raw": "{\n    \"meetingDetails\": {\n        \"timeRange\": {\n            \"startTime\": \"22:45\",\n            \"endTime\": \"23:45\"\n        },\n        \"numberOfPeople\": 2\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,7 +21,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/conference-room",
+					"raw": "http://localhost:8080/api/conference-room?bestRoom=true",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -30,13 +30,19 @@
 					"path": [
 						"api",
 						"conference-room"
+					],
+					"query": [
+						{
+							"key": "bestRoom",
+							"value": "true"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "room-detail",
+			"name": "RoomDetail",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -45,7 +51,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"timeRange\": {\n        \"startTime\": \"2024-01-16 17:00:00\",\n        \"endTime\": \"2024-01-16 18:00:00\"\n    },\n    \"numberOfPeople\": 7\n}",
+					"raw": "{\n    \"timeRange\": {\n        \"startTime\": \"22:45\",\n        \"endTime\": \"23:45\"\n    },\n    \"numberOfPeople\": 7\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -74,43 +80,13 @@
 			"response": []
 		},
 		{
-			"name": "book-room",
+			"name": "RoomBooking",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"roomId\": 3,\n    \"timeRange\": {\n        \"startTime\": \"2024-07-01 18:00\",\n        \"endTime\": \"2024-07-01 19:45\"\n    },\n    \"numberOfPeople\": 11\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/conference-bookings/book",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"conference-bookings",
-						"book"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "bookings",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"startTime\": \"2024-01-17 17:01:00\",\n    \"endTime\": \"2024-01-17 19:30:00\"\n}",
+					"raw": "{\n    \"roomId\": 3,\n    \"meetingDetails\": {\n        \"timeRange\": {\n            \"startTime\": \"23:45\",\n            \"endTime\": \"00:00\"\n        },\n        \"numberOfPeople\": 11\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -127,6 +103,36 @@
 					"path": [
 						"api",
 						"conference-bookings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchBookings",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"startTime\": \"23:30\",\n    \"endTime\": \"23:45\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/conference-bookings/search",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"conference-bookings",
+						"search"
 					]
 				}
 			},
