@@ -1,5 +1,6 @@
 package app.conferenceroom.infra.exception;
 
+import jakarta.servlet.ServletException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.List;
-
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler {
@@ -22,27 +21,37 @@ public class CustomExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidationException(BindException ex) {
         String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         log.info("handleValidationException Error message: {}", errorMessage);
-        ErrorResponse errorResponse = new ErrorResponse("error", HttpStatus.BAD_REQUEST.getReasonPhrase(), errorMessage);
+        ErrorResponse errorResponse = new ErrorResponse(
+                "VALIDATION_ERROR", HttpStatus.BAD_REQUEST.getReasonPhrase(), errorMessage);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ServletException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleServletException(ServletException ex) {
+        log.info("handleServletException Error message: {}", ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(
+                "SERVLET_ERROR", HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConferenceRoomException.class)
     public ResponseEntity<ErrorResponse> handleAppException(ConferenceRoomException ex) {
         log.info("handleAppException Error code: {}", ex.getErrorCode());
-        ErrorResponse errorResponse = new ErrorResponse("error", ex.getErrorCode(), ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = new ErrorResponse("APPLICATION_ERROR", ex.getErrorCode(), ex.getMessage());
+        return new ResponseEntity<>(errorResponse, ex.getHttpStatus());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         log.info("handleHttpMessageNotReadable Error : {}", ex.getMessage());
-        ErrorResponse errorMessage = new ErrorResponse("error", "INVALID_INPUT",
-                "Incorrect time format. Please use the format 'HH:mm'.");
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = new ErrorResponse(
+                "MESSAGE_NOT_READABLE", HttpStatus.BAD_REQUEST.getReasonPhrase(), ex.getMessage().split(": ")[1]);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @Getter @Setter
-    static class ErrorResponse {
+    public static class ErrorResponse {
         private String status;
         private String errorCode;
         private String errorMessage;

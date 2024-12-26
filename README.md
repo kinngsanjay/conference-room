@@ -40,9 +40,9 @@ Two tables are created `Room` and `Booking`
 
 `2024-01-17` here is `current date`
 
-| Booking Id | Room Id | Start_Time       | End_Time         | Number_Of_People |
-|------------|---------|------------------|------------------|------------------|
-| 1          | 3       | 2024-01-17 10:00 | 2024-01-17 11:00 | 5                |
+| Booking Id | Room Id | BOOKING_REFERENCE | MEETING_DATE      | Start_Time | End_Time        | Number_Of_People |
+|------------|---------|-------------------|-------------------|------------|-----------------|------------------|
+| 1          | 3       | BR-001 | 2024-01-17 |  10:00     | 11:00 | 5                |
 
 ## Maintenance Timings
 Maintenance Timings of the room are configurable from the `application.yml` file
@@ -62,17 +62,19 @@ maintenance:
 ### 1. Fetch Available Conference Room (POST)
 > **Definition**: Fetch available conference rooms.
 
-**Endpoint**: `/api/conference-room/search`
+**Endpoint**: `/api/conference-room?bestRoom=false`
 
 **Body**:
 
 ```json
 {
-  "timeRange": {
-    "startTime": "2024-01-17 17:21",
-    "endTime": "2024-01-17 17:30"
-  },
-  "numberOfPeople": 11
+  "meetingDetails": {
+    "timeRange": {
+      "startTime": "23:00",
+      "endTime": "23:45"
+    },
+    "numberOfPeople": 2
+  }
 }
 ```
 Response:
@@ -80,19 +82,27 @@ Response:
 ```json
 {
   "status": "success",
-  "data": {
-    "availableRooms": [
-      "Inspire",
-      "Strive"
-    ]
-  }
+  "data": [
+    {
+      "name": "Beauty",
+      "capacity": 7
+    },
+    {
+      "name": "Inspire",
+      "capacity": 12
+    },
+    {
+      "name": "Strive",
+      "capacity": 20
+    }
+  ]
 }
 ```
 Sample Error Response:
 
 ```json
 {
-  "status": "error",
+  "status": "VALIDATION_ERROR",
   "errorCode": "Bad Request",
   "errorMessage": "Entered Time is not suitable input"
 }
@@ -108,7 +118,6 @@ Response:
 {
   "status": "success",
   "data": {
-    "roomId": 3,
     "name": "Inspire",
     "capacity": 12,
     "maintenanceTimings": [
@@ -132,9 +141,9 @@ Sample Error Response:
 
 ```json
 {
-  "status": "error",
+  "status": "APPLICATION_ERROR",
   "errorCode": "NO_SUCH_ROOM",
-  "errorMessage": "No room exists with this name or id"
+  "errorMessage": "No room exist with this name or id"
 }
 ```
 ### 3. Book a Room (POST)
@@ -146,12 +155,26 @@ Body:
 
 ```json
 {
-  "roomId": 3,
-  "timeRange": {
-    "startTime": "2024-01-17 18:11",
-    "endTime": "2024-01-17 19:45"
-  },
-  "numberOfPeople": 13
+  "meetingDetails": {
+    "timeRange": {
+      "startTime": "23:00",
+      "endTime": "23:45"
+    },
+    "numberOfPeople": 2
+  }
+}
+```
+OR
+```json
+{
+  "roomName": "Amaze",
+  "meetingDetails": {
+    "timeRange": {
+      "startTime": "23:00",
+      "endTime": "23:45"
+    },
+    "numberOfPeople": 2
+  }
 }
 ```
 Response:
@@ -159,29 +182,39 @@ Response:
 ```json
 {
   "status": "success",
-  "data": "Conference Room Booked"
+  "data": {
+    "bookingReference": "BR-1735253943981",
+    "roomName": "Amaze",
+    "roomDetailsDto": {
+      "timeRange": {
+        "startTime": "23:00",
+        "endTime": "23:45"
+      },
+      "numberOfPeople": 2
+    }
+  }
 }
 ```
 Sample Error Response:
 
 ```json
 {
-  "status": "error",
-  "errorCode": "Bad Request",
-  "errorMessage": "Entered Time is not suitable input"
+  "status": "APPLICATION_ERROR",
+  "errorCode": "UNABLE_TO_BOOK_ROOM",
+  "errorMessage": "Room is either booked or room name not correct"
 }
 ```
 ### 4. Fetch All Bookings within a Slot (POST)
    Definition: Fetch all bookings within a time slot.
 
-Endpoint: `/api/conference-bookings`
+Endpoint: `/api/conference-bookings/search`
 
 Body:
 
 ```json
 {
-  "startTime": "2024-01-17 17:00",
-  "endTime": "2024-01-17 19:30"
+  "startTime": "23:30",
+  "endTime": "23:45"
 }
 ```
 Response:
@@ -189,20 +222,26 @@ Response:
 ```json
 [
   {
-    "roomId": 4,
-    "timeRange": {
-      "startTime": "2024-01-17 17:30",
-      "endTime": "2024-01-17 17:45"
-    },
-    "numberOfPeople": 13
+    "bookingReference": "BR-1735253943981",
+    "roomName": "Amaze",
+    "roomDetailsDto": {
+      "timeRange": {
+        "startTime": "23:00",
+        "endTime": "23:45"
+      },
+      "numberOfPeople": 2
+    }
   },
   {
-    "roomId": 4,
-    "timeRange": {
-      "startTime": "2024-01-17 18:30",
-      "endTime": "2024-01-17 19:45"
-    },
-    "numberOfPeople": 13
+    "bookingReference": "BR-1735254322510",
+    "roomName": "Strive",
+    "roomDetailsDto": {
+      "timeRange": {
+        "startTime": "23:00",
+        "endTime": "23:45"
+      },
+      "numberOfPeople": 2
+    }
   }
 ]
 ```
@@ -210,8 +249,31 @@ Sample Error Response:
 
 ```json
 {
-  "status": "error",
+  "status": "VALIDATION_ERROR",
   "errorCode": "Bad Request",
-  "errorMessage": "Entered Time is not suitable input"
+  "errorMessage": "End Time cannot be earlier than Start time"
+}
+```
+
+### 5. Cancel a booking (DELETE)
+Definition: Cancel a booking using booking reference.
+
+Endpoint: `/api/conference-bookings/BR-1735226262451`
+
+Response:
+
+```json
+{
+  "status": "success",
+  "data": "Conference Room Booking Cancelled"
+}
+```
+Sample Error Response:
+
+```json
+{
+  "status": "error",
+  "errorCode": "NO_BOOKING_FOUND",
+  "errorMessage": "No booking for the selected time range"
 }
 ```

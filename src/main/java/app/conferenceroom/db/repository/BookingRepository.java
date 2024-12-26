@@ -18,7 +18,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllBookings(@Param("startTime") LocalTime startTime,
                                   @Param("endTime") LocalTime endTime);
 
-    Optional<Booking> findByRoomIdAndStartTimeAndEndTime(Long roomId, LocalTime startTime, LocalTime endTIme);
-
-    Optional<Booking> findByBookingId(Long bookingId);
+    Optional<Booking> findByBookingReference(String bookingReference);
 }

@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
@@ -14,6 +15,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query("SELECT r FROM Room r WHERE r.capacity >= :capacity")
     List<Room> findRoomByCapacity(@Param("capacity") int capacity);
 
-    Room findByName(String name);
+    Optional<Room> findByName(String name);
 
 }

@@ -21,7 +21,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/conference-room?bestRoom=true",
+					"raw": "http://localhost:8080/api/conference-room?bestRoom=false",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -34,7 +34,7 @@
 					"query": [
 						{
 							"key": "bestRoom",
-							"value": "true"
+							"value": "false"
 						}
 					]
 				}
@@ -51,7 +51,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"timeRange\": {\n        \"startTime\": \"22:45\",\n        \"endTime\": \"23:45\"\n    },\n    \"numberOfPeople\": 7\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -86,7 +86,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"roomId\": 3,\n    \"meetingDetails\": {\n        \"timeRange\": {\n            \"startTime\": \"23:45\",\n            \"endTime\": \"00:00\"\n        },\n        \"numberOfPeople\": 11\n    }\n}",
+					"raw": "{\n    \"roomName\": \"Beauty\",\n    \"meetingDetails\": {\n        \"timeRange\": {\n            \"startTime\": \"23:00\",\n            \"endTime\": \"23:45\"\n        },\n        \"numberOfPeople\": 2\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -115,7 +115,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"startTime\": \"23:30\",\n    \"endTime\": \"23:45\"\n}",
+					"raw": "{\n    \"startTime\": \"23:00\",\n    \"endTime\": \"23:45\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -139,13 +139,13 @@
 			"response": []
 		},
 		{
-			"name": "cancel",
+			"name": "Cancel",
 			"request": {
 				"method": "DELETE",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"startTime\": \"2024-01-17 17:01:00\",\n    \"endTime\": \"2024-01-17 19:30:00\"\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -153,7 +153,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/conference-bookings/cancel",
+					"raw": "http://localhost:8080/api/conference-bookings/BR-1735254322510",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -162,7 +162,7 @@
 					"path": [
 						"api",
 						"conference-bookings",
-						"cancel"
+						"BR-1735254322510"
 					]
 				}
 			},
