@@ -4,7 +4,7 @@ package app.conferenceroom.domain.service;
 import app.conferenceroom.db.entity.Room;
 import app.conferenceroom.db.repository.RoomRepository;
 import app.conferenceroom.domain.enums.ErrorCode;
-import app.conferenceroom.domain.mapper.RoomToModelMapper;
+import app.conferenceroom.db.mapper.RoomToModelMapper;
 import app.conferenceroom.domain.model.BookingModel;
 import app.conferenceroom.domain.model.RoomModel;
 import app.conferenceroom.infra.exception.ConferenceRoomException;

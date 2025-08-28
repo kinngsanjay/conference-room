@@ -24,7 +24,7 @@ public class MeetingTimeRangeValidator implements ConstraintValidator<ValidMeeti
             return false;
         }
         if (meetingTimeRange.startTime() == null || meetingTimeRange.endTime() == null) {
-            addErrorMessage(context, "startTime or endTime cannot be null");
+            addErrorMessage(context, "Start Time or End Time cannot be null");
             return false;
         }
         return validateTimeRange(meetingTimeRange, context);

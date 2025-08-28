@@ -2,8 +2,8 @@ package app.conferenceroom.api.controller;
 
 import app.conferenceroom.api.dto.BookingResponseDto;
 import app.conferenceroom.api.dto.MeetingTimeRange;
-import app.conferenceroom.domain.mapper.BookingRequestToModel;
-import app.conferenceroom.domain.mapper.BookingResponseDtoMapper;
+import app.conferenceroom.api.mapper.BookingRequestToModel;
+import app.conferenceroom.api.mapper.BookingResponseDtoMapper;
 import app.conferenceroom.domain.service.BookingService;
 import app.conferenceroom.api.dto.BookingRequestDto;
 import app.conferenceroom.infra.response.Response;

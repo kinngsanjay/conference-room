@@ -37,6 +37,17 @@ public class BookingServiceTest {
     }
 
     @Test
+    public void testBookRoomWithNoAvailability() {
+        LocalTime time = LocalTime.of(14, 0, 0);
+        var bookingModel = new BookingModel("",
+                new RoomModel(4L, "Strive"), new RoomDetailsDto(getMeetingTimeRange(time), 15));
+        ConferenceRoomException exception = assertThrows(ConferenceRoomException.class, () -> {
+            bookingService.bookRoom(bookingModel);
+        });
+        assertEquals(ErrorCode.NO_ROOM_AVAILABLE.getErrorCode(), exception.getErrorCode());
+    }
+
+    @Test
     public void testGetAllBookings() {
         LocalTime time = LocalTime.of(14, 15, 0);
         bookingService.bookRoom(getBooking(time));

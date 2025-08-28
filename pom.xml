@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.0</version>
+		<version>3.5.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>app.conferenceroom</groupId>
@@ -16,7 +16,7 @@
 	<packaging>war</packaging>
 	<properties>
 		<java.version>17</java.version>
-		<sonar.exclusions>**/*Application.*,**/dto/*,**/entity/*,**/infra/**,**/numberOfPeople/**,**/*MaintenanceService.*</sonar.exclusions>
+		<sonar.exclusions>**/*Application.*,**/model/*,**/dto/*,**/entity/*,**/infra/**,**/numberOfPeople/**,**/*MaintenanceService.*</sonar.exclusions>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -74,6 +74,27 @@
 						<phase>verify</phase>
 						<goals>
 							<goal>sonar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- JaCoCo -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.10</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>

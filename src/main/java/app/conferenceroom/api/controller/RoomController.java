@@ -1,8 +1,8 @@
 package app.conferenceroom.api.controller;
 
 import app.conferenceroom.api.dto.BookingRequestDto;
-import app.conferenceroom.domain.mapper.BookingRequestToModel;
-import app.conferenceroom.domain.mapper.RoomDtoMapper;
+import app.conferenceroom.api.mapper.BookingRequestToModel;
+import app.conferenceroom.api.mapper.RoomDtoMapper;
 import app.conferenceroom.domain.service.RoomService;
 import app.conferenceroom.api.dto.RoomDto;
 import app.conferenceroom.infra.response.Response;

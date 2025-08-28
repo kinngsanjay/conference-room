@@ -1,4 +1,4 @@
-package app.conferenceroom.domain.mapper;
+package app.conferenceroom.api.mapper;
 
 import app.conferenceroom.api.dto.BookingResponseDto;
 import app.conferenceroom.domain.model.BookingModel;

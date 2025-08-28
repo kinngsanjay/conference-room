@@ -1,4 +1,4 @@
-package app.conferenceroom.domain.mapper;
+package app.conferenceroom.db.mapper;
 
 import app.conferenceroom.db.entity.Room;
 import app.conferenceroom.domain.model.RoomModel;

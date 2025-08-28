@@ -36,6 +36,25 @@ public class MeetingTimeRangeValidatorTest {
     }
 
     @Test
+    public void testIsValidWithNullStartOrEndTime() {
+        LocalTime startTime = null;
+        LocalTime endTime = LocalTime.of(22, 0, 0);
+        MeetingTimeRange meetingTimeRange = new MeetingTimeRange(startTime, endTime);
+
+        Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
+        assertFalse(violations.isEmpty());
+        assertEquals("Start Time or End Time cannot be null", violations.iterator().next().getMessage());
+
+        startTime = LocalTime.of(21, 0, 15);
+        endTime = null;
+        meetingTimeRange = new MeetingTimeRange(startTime, endTime);
+
+        violations = validator.validate(new MeetingTimeRangeWrapper(meetingTimeRange));
+        assertFalse(violations.isEmpty());
+        assertEquals("Start Time or End Time cannot be null", violations.iterator().next().getMessage());
+    }
+
+    @Test
     public void testIsValidWithTimeNotSuitable() {
         LocalTime startTime = LocalTime.of(21, 0, 15);
         LocalTime endTime = LocalTime.of(22, 0, 0);
