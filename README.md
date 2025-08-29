@@ -22,7 +22,7 @@ Once the code is on your local branch, please run the maven command `mvn clean i
 
 
 ## Postman Collection
-To easily test and use the API, you can import the Postman collection [here](https://raw.githubusercontent.com/kinngsanjay/conference-room/refs/heads/main/postman-collection/Confrence-Room.postman_collection.json).
+To easily test and use the API, you can import the Postman collection [here](https://raw.githubusercontent.com/kinngsanjay/conference-room/refs/heads/main/postman-collection/Confrence-Room.postman_collection.json?raw=true).
 
 ## Database
 Two tables are created `Room` and `Booking`
