@@ -1,9 +1,9 @@
 package app.conferenceroom.domain.service;
 
-import app.conferenceroom.api.dto.MeetingTimeRange;
-import app.conferenceroom.api.dto.RoomDetailsDto;
+import app.conferenceroom.api.dto.TimeRange;
 import app.conferenceroom.domain.enums.ErrorCode;
 import app.conferenceroom.domain.model.BookingModel;
+import app.conferenceroom.domain.model.MeetingModel;
 import app.conferenceroom.domain.model.RoomModel;
 import app.conferenceroom.infra.exception.ConferenceRoomException;
 import org.junit.jupiter.api.Test;
@@ -19,13 +19,13 @@ public class BookingServiceTest {
     @Autowired
     BookingService bookingService;
 
-    private MeetingTimeRange getMeetingTimeRange(LocalTime startTime) {
-        return new MeetingTimeRange(startTime, startTime.plusMinutes(15));
+    private TimeRange getMeetingTimeRange(LocalTime startTime) {
+        return new TimeRange(startTime, startTime.plusMinutes(15));
     }
 
     private BookingModel getBooking(LocalTime startTime) {
         return new BookingModel("",
-                new RoomModel(4L, "Strive"), new RoomDetailsDto(getMeetingTimeRange(startTime), 12));
+                new RoomModel(4L, "Strive"), new MeetingModel(getMeetingTimeRange(startTime), 12));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class BookingServiceTest {
     public void testBookRoomWithNoAvailability() {
         LocalTime time = LocalTime.of(14, 0, 0);
         var bookingModel = new BookingModel("",
-                new RoomModel(4L, "Strive"), new RoomDetailsDto(getMeetingTimeRange(time), 15));
+                new RoomModel(4L, "Strive"), new MeetingModel(getMeetingTimeRange(time), 15));
         ConferenceRoomException exception = assertThrows(ConferenceRoomException.class, () -> {
             bookingService.bookRoom(bookingModel);
         });

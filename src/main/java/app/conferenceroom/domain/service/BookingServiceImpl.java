@@ -3,7 +3,7 @@ package app.conferenceroom.domain.service;
 import app.conferenceroom.db.entity.Booking;
 import app.conferenceroom.db.entity.Room;
 import app.conferenceroom.db.repository.BookingRepository;
-import app.conferenceroom.api.dto.MeetingTimeRange;
+import app.conferenceroom.api.dto.TimeRange;
 import app.conferenceroom.domain.enums.ErrorCode;
 import app.conferenceroom.domain.model.BookingModel;
 import app.conferenceroom.domain.model.RoomModel;
@@ -31,9 +31,9 @@ public class BookingServiceImpl implements BookingService {
         room.setRoomId(bookingModel.getRoomModel().getRoomId());
         booking.setRoom(room);
         booking.setBookingReference(bookingModel.getBookingReference());
-        booking.setStartTime(bookingModel.getRoomDetailsDto().timeRange().startTime());
-        booking.setEndTime(bookingModel.getRoomDetailsDto().timeRange().endTime());
-        booking.setNumberOfPeople(bookingModel.getRoomDetailsDto().numberOfPeople());
+        booking.setStartTime(bookingModel.getMeetingModel().timeRange().startTime());
+        booking.setEndTime(bookingModel.getMeetingModel().timeRange().endTime());
+        booking.setNumberOfPeople(bookingModel.getMeetingModel().numberOfPeople());
         booking.setMeetingDate(LocalDate.now());
         return booking;
     }
@@ -65,7 +65,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingModel> getBookingsByTime(MeetingTimeRange timeRange) {
+    public List<BookingModel> getBookingsByTime(TimeRange timeRange) {
         log.info("getBookingsByTime, timeRange: {}", timeRange);
         return roomAvailabilityService.getAllBookings(timeRange);
     }

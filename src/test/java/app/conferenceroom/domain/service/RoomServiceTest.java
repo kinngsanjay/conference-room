@@ -1,10 +1,11 @@
 package app.conferenceroom.domain.service;
 
 import app.conferenceroom.api.dto.BookingRequestDto;
-import app.conferenceroom.api.dto.MeetingTimeRange;
-import app.conferenceroom.api.dto.RoomDetailsDto;
+import app.conferenceroom.api.dto.MeetingRequestDto;
+import app.conferenceroom.api.dto.TimeRange;
 import app.conferenceroom.domain.enums.ErrorCode;
 import app.conferenceroom.domain.model.BookingModel;
+import app.conferenceroom.domain.model.MeetingModel;
 import app.conferenceroom.infra.exception.ConferenceRoomException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class RoomServiceTest {
     @Autowired
     RoomService roomService;
 
-    private MeetingTimeRange getMeetingTimeRange(LocalTime startTime) {
-        return new MeetingTimeRange(startTime, startTime.plusMinutes(15));
+    private TimeRange getMeetingTimeRange(LocalTime startTime) {
+        return new TimeRange(startTime, startTime.plusMinutes(15));
     }
 
     @Test
@@ -41,10 +42,11 @@ public class RoomServiceTest {
     public void testGetRoomByName1() {
         LocalTime time = LocalTime.of(14, 0, 0);
         BookingRequestDto bookingRequestDto =  new BookingRequestDto(
-                "Strive", new RoomDetailsDto(getMeetingTimeRange(time), 12));
+                "Strive", new MeetingRequestDto(getMeetingTimeRange(time), 12));
         var bookingModel = new BookingModel();
         bookingModel.setRoomModel(roomService.getRoomByName(bookingRequestDto.roomName()));
-        bookingModel.setRoomDetailsDto(bookingRequestDto.roomDetailsDto());
+        bookingModel.setMeetingModel(new MeetingModel(bookingRequestDto.meetingRequestDto().timeRange(),
+                bookingRequestDto.meetingRequestDto().numberOfPeople()));
         assertNotNull(roomService.getAvailableRooms(bookingModel, false));
     }
 

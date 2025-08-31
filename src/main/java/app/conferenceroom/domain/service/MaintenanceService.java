@@ -1,7 +1,6 @@
 package app.conferenceroom.domain.service;
 
-import app.conferenceroom.api.dto.MaintenanceTimeRange;
-import app.conferenceroom.api.dto.MeetingTimeRange;
+import app.conferenceroom.api.dto.TimeRange;
 import app.conferenceroom.domain.enums.ErrorCode;
 import app.conferenceroom.infra.exception.ConferenceRoomException;
 import lombok.Data;
@@ -18,12 +17,12 @@ import java.util.function.Predicate;
 @Data
 public class MaintenanceService {
 
-    private List<MaintenanceTimeRange> timings;
+    private List<TimeRange> timings;
 
-    public void checkForOverlaps(MeetingTimeRange meetingTimeRange) {
+    public void checkForOverlaps(TimeRange meetingTimeRange) {
         log.info("Checking for overlaps: {}:", meetingTimeRange);
 
-        Predicate<MaintenanceTimeRange> overlapCondition = timeRange ->
+        Predicate<TimeRange> overlapCondition = timeRange ->
                 timeRange.startTime().isBefore(meetingTimeRange.endTime()) &&
                         timeRange.endTime().isAfter(meetingTimeRange.startTime());
 

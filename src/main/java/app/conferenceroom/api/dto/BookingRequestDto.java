@@ -5,9 +5,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 public record BookingRequestDto(
+        @JsonProperty("roomName")
         String roomName,
-        @JsonProperty("meetingDetails")
-        @NotNull(message = "roomAvailabilityDto must not be null")
+        @JsonProperty("meetingRequest")
+        @NotNull(message = "meeting request must have value")
         @Valid
-        RoomDetailsDto roomDetailsDto
+        MeetingRequestDto meetingRequestDto
 ) {}

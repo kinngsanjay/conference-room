@@ -1,9 +1,6 @@
 package app.conferenceroom.api.controller;
 
-import app.conferenceroom.api.dto.BookingRequestDto;
-import app.conferenceroom.api.dto.MeetingTimeRange;
-import app.conferenceroom.api.dto.RoomDetailsDto;
-import app.conferenceroom.api.dto.RoomDto;
+import app.conferenceroom.api.dto.*;
 import app.conferenceroom.infra.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,19 +19,19 @@ public class RoomControllerTest {
     @Autowired
     RoomController roomController;
 
-    private MeetingTimeRange getMeetingTimeRange(LocalTime startTime) {
-        return new MeetingTimeRange(startTime, startTime.plusMinutes(15));
+    private TimeRange getMeetingTimeRange(LocalTime startTime) {
+        return new TimeRange(startTime, startTime.plusMinutes(15));
     }
 
     private BookingRequestDto getBookingDto(LocalTime startTime) {
         return new BookingRequestDto(
-                "Inspire", new RoomDetailsDto(getMeetingTimeRange(startTime), 5));
+                "Inspire", new MeetingRequestDto(getMeetingTimeRange(startTime), 5));
     }
 
     @Test
-    public void testGetAllRooms() {
+    public void testSearch() {
         LocalTime time = LocalTime.of(22, 0, 0);
-        ResponseEntity<Response<List<RoomDto>>> response = roomController.getAllRooms(true, getBookingDto(time));
+        ResponseEntity<Response<List<RoomDto>>> response = roomController.search(true, getBookingDto(time));
         Assertions.assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

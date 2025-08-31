@@ -4,11 +4,11 @@ import app.conferenceroom.db.entity.Booking;
 import app.conferenceroom.db.entity.Room;
 import app.conferenceroom.db.repository.BookingRepository;
 import app.conferenceroom.db.repository.RoomRepository;
-import app.conferenceroom.api.dto.MeetingTimeRange;
-import app.conferenceroom.api.dto.RoomDetailsDto;
+import app.conferenceroom.api.dto.TimeRange;
 import app.conferenceroom.domain.enums.ErrorCode;
 import app.conferenceroom.db.mapper.RoomToModelMapper;
 import app.conferenceroom.domain.model.BookingModel;
+import app.conferenceroom.domain.model.MeetingModel;
 import app.conferenceroom.domain.model.RoomModel;
 import app.conferenceroom.infra.exception.ConferenceRoomException;
 import lombok.AllArgsConstructor;
@@ -36,10 +36,10 @@ public class RoomAvailabilityService {
      */
     public List<RoomModel> getAllAvailableRooms(BookingModel bookingModel) {
         log.info("Search available booking room bookingModel: {}", bookingModel);
-        maintenanceService.checkForOverlaps(bookingModel.getRoomDetailsDto().timeRange());
-        var availableRoomsByCapacity = roomRepository.findRoomByCapacity(bookingModel.getRoomDetailsDto().numberOfPeople());
+        maintenanceService.checkForOverlaps(bookingModel.getMeetingModel().timeRange());
+        var availableRoomsByCapacity = roomRepository.findRoomByCapacity(bookingModel.getMeetingModel().numberOfPeople());
 
-        Predicate<Room> roomFilter = room -> isRoomAvailable(room, bookingModel.getRoomDetailsDto().timeRange(), bookingRepository.findAll());
+        Predicate<Room> roomFilter = room -> isRoomAvailable(room, bookingModel.getMeetingModel().timeRange(), bookingRepository.findAll());
 
         return availableRoomsByCapacity.stream()
                 .filter(roomFilter)
@@ -49,7 +49,7 @@ public class RoomAvailabilityService {
 
     }
 
-    private boolean isRoomAvailable(Room room, MeetingTimeRange timeRange, List<Booking> bookings) {
+    private boolean isRoomAvailable(Room room, TimeRange timeRange, List<Booking> bookings) {
         log.info("isRoomAvailable, room: {}, timeRange: {}, bookings: {}", room.getName(), timeRange, bookings);
         return bookings.stream()
                 .noneMatch(booking ->
@@ -58,7 +58,7 @@ public class RoomAvailabilityService {
                                 booking.getEndTime().isAfter(timeRange.startTime()));
     }
 
-    public List<BookingModel> getAllBookings(MeetingTimeRange timeRange) {
+    public List<BookingModel> getAllBookings(TimeRange timeRange) {
         log.info("getAllBookings, timeRange: {}", timeRange);
         var bookings = bookingRepository.findAllBookings(timeRange.startTime(), timeRange.endTime());
         if (bookings.isEmpty()) {
@@ -69,7 +69,7 @@ public class RoomAvailabilityService {
                 .map(booking -> new BookingModel(
                         booking.getBookingReference(),
                         new RoomModel(booking.getRoom().getRoomId(), booking.getRoom().getName()),
-                        new RoomDetailsDto(new MeetingTimeRange(booking.getStartTime(), booking.getEndTime()),
+                        new MeetingModel(new TimeRange(booking.getStartTime(), booking.getEndTime()),
                         booking.getNumberOfPeople())
                 )).toList();
     }

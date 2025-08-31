@@ -1,9 +1,6 @@
 package app.conferenceroom.api.controller;
 
-import app.conferenceroom.api.dto.BookingRequestDto;
-import app.conferenceroom.api.dto.BookingResponseDto;
-import app.conferenceroom.api.dto.MeetingTimeRange;
-import app.conferenceroom.api.dto.RoomDetailsDto;
+import app.conferenceroom.api.dto.*;
 import app.conferenceroom.infra.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,13 +19,13 @@ public class BookingControllerTest {
     @Autowired
     BookingController bookingController;
 
-    private MeetingTimeRange getMeetingTimeRange(LocalTime startTime) {
-        return new MeetingTimeRange(startTime, startTime.plusMinutes(15));
+    private TimeRange getMeetingTimeRange(LocalTime startTime) {
+        return new TimeRange(startTime, startTime.plusMinutes(15));
     }
 
     private BookingRequestDto getBookingDto(LocalTime startTime) {
         return new BookingRequestDto(
-                "Inspire", new RoomDetailsDto(getMeetingTimeRange(startTime), 5));
+                "Inspire", new MeetingRequestDto(getMeetingTimeRange(startTime), 5));
     }
 
     @Test
@@ -50,7 +47,7 @@ public class BookingControllerTest {
     public void testCancelBooking() {
         LocalTime time = LocalTime.of(15, 0, 0);
         BookingRequestDto bookingRequestDto = new BookingRequestDto(
-                "Inspire", new RoomDetailsDto(getMeetingTimeRange(time), 5));
+                "Inspire", new MeetingRequestDto(getMeetingTimeRange(time), 5));
         var bookingResponse = bookingController.bookingRoom(bookingRequestDto);
         ResponseEntity<Response<String>> response = bookingController.cancelBooking(
                 bookingResponse.getBody().getData().bookingReference());
