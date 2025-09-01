@@ -69,7 +69,7 @@ maintenance:
 ```json
 {
   "meetingDetails": {
-    "timeRange": {
+    "timeRangeDTO": {
       "startTime": "23:00",
       "endTime": "23:45"
     },
@@ -156,7 +156,7 @@ Body:
 ```json
 {
   "meetingDetails": {
-    "timeRange": {
+    "timeRangeDTO": {
       "startTime": "23:00",
       "endTime": "23:45"
     },
@@ -169,7 +169,7 @@ OR
 {
   "roomName": "Amaze",
   "meetingDetails": {
-    "timeRange": {
+    "timeRangeDTO": {
       "startTime": "23:00",
       "endTime": "23:45"
     },
@@ -186,7 +186,7 @@ Response:
     "bookingReference": "BR-1735253943981",
     "roomName": "Amaze",
     "roomDetailsDto": {
-      "timeRange": {
+      "timeRangeDTO": {
         "startTime": "23:00",
         "endTime": "23:45"
       },
@@ -225,7 +225,7 @@ Response:
     "bookingReference": "BR-1735253943981",
     "roomName": "Amaze",
     "roomDetailsDto": {
-      "timeRange": {
+      "timeRangeDTO": {
         "startTime": "23:00",
         "endTime": "23:45"
       },
@@ -236,7 +236,7 @@ Response:
     "bookingReference": "BR-1735254322510",
     "roomName": "Strive",
     "roomDetailsDto": {
-      "timeRange": {
+      "timeRangeDTO": {
         "startTime": "23:00",
         "endTime": "23:45"
       },

@@ -1,7 +1,7 @@
 package app.conferenceroom.api.controller;
 
 import app.conferenceroom.api.dto.*;
-import app.conferenceroom.infra.response.Response;
+import app.conferenceroom.api.infra.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,26 +19,26 @@ public class RoomControllerTest {
     @Autowired
     RoomController roomController;
 
-    private TimeRange getMeetingTimeRange(LocalTime startTime) {
-        return new TimeRange(startTime, startTime.plusMinutes(15));
+    private TimeRangeDTO getMeetingTimeRange(LocalTime startTime) {
+        return new TimeRangeDTO(startTime, startTime.plusMinutes(15));
     }
 
-    private BookingRequestDto getBookingDto(LocalTime startTime) {
-        return new BookingRequestDto(
-                "Inspire", new MeetingRequestDto(getMeetingTimeRange(startTime), 5));
+    private BookingRequestDTO getBookingDto(LocalTime startTime) {
+        return new BookingRequestDTO(
+                "Inspire", getMeetingTimeRange(startTime), 5);
     }
 
     @Test
     public void testSearch() {
         LocalTime time = LocalTime.of(22, 0, 0);
-        ResponseEntity<Response<List<RoomDto>>> response = roomController.search(true, getBookingDto(time));
+        ResponseEntity<Response<List<RoomDTO>>> response = roomController.search(1, getBookingDto(time));
         Assertions.assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
-    public void testGetRoomDetailsByName() {
-        ResponseEntity<Response<RoomDto>> response = roomController.getRoomDetailsByName("Inspire");
+    public void testGetRoomByName() {
+        ResponseEntity<Response<RoomDTO>> response = roomController.getRoomByName("Inspire");
         Assertions.assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

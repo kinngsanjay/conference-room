@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public record RoomDto (
+public record RoomDTO(
         @JsonProperty("name")
         String name,
         @JsonProperty("capacity")
         int capacity,
         @JsonInclude(JsonInclude.Include.NON_NULL)
         @JsonProperty("maintenanceTimings")
-        List<TimeRange> maintenanceTimings
+        List<TimeRangeDTO> maintenanceTimings
 ) {}

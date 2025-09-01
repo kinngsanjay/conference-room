@@ -1,12 +1,11 @@
 package app.conferenceroom.domain.service;
 
-import app.conferenceroom.api.dto.BookingRequestDto;
-import app.conferenceroom.api.dto.MeetingRequestDto;
-import app.conferenceroom.api.dto.TimeRange;
-import app.conferenceroom.domain.enums.ErrorCode;
-import app.conferenceroom.domain.model.BookingModel;
-import app.conferenceroom.domain.model.MeetingModel;
-import app.conferenceroom.infra.exception.ConferenceRoomException;
+import app.conferenceroom.api.dto.BookingRequestDTO;
+import app.conferenceroom.api.dto.TimeRangeDTO;
+import app.conferenceroom.service.RoomService;
+import app.conferenceroom.service.exception.RoomNotExistException;
+import app.conferenceroom.service.model.CreateBookingCommand;
+import app.conferenceroom.service.model.TimeRange;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,34 +19,33 @@ public class RoomServiceTest {
     @Autowired
     RoomService roomService;
 
-    private TimeRange getMeetingTimeRange(LocalTime startTime) {
-        return new TimeRange(startTime, startTime.plusMinutes(15));
+    private TimeRangeDTO getMeetingTimeRange(LocalTime startTime) {
+        return new TimeRangeDTO(startTime, startTime.plusMinutes(15));
     }
 
     @Test
     public void testGetRoomByName() {
-        assertEquals(roomService.getRoomByName("Inspire").getRoomId(), 3L);
+        assertEquals(roomService.getRoomByName("Inspire").roomId(), 3L);
     }
 
     @Test
     public void testGetRoomByNameWhichDoNotExist() {
-        ConferenceRoomException exception = assertThrows(ConferenceRoomException.class, () -> {
+        RoomNotExistException exception = assertThrows(RoomNotExistException.class, () -> {
             roomService.getRoomByName("TestRoom");
         });
-
-        assertEquals(ErrorCode.NO_SUCH_ROOM.getErrorCode(), exception.getErrorCode());
     }
 
     @Test
     public void testGetRoomByName1() {
         LocalTime time = LocalTime.of(14, 0, 0);
-        BookingRequestDto bookingRequestDto =  new BookingRequestDto(
-                "Strive", new MeetingRequestDto(getMeetingTimeRange(time), 12));
-        var bookingModel = new BookingModel();
-        bookingModel.setRoomModel(roomService.getRoomByName(bookingRequestDto.roomName()));
-        bookingModel.setMeetingModel(new MeetingModel(bookingRequestDto.meetingRequestDto().timeRange(),
-                bookingRequestDto.meetingRequestDto().numberOfPeople()));
-        assertNotNull(roomService.getAvailableRooms(bookingModel, false));
+        BookingRequestDTO bookingRequestDto = new BookingRequestDTO("Strive", getMeetingTimeRange(time), 12);
+        var bookingRoom = new CreateBookingCommand(
+                bookingRequestDto.roomName(),
+                new TimeRange(
+                        bookingRequestDto.timeRangeDTO().startTime(),
+                        bookingRequestDto.timeRangeDTO().endTime()),
+                bookingRequestDto.numberOfAttendees());
+        assertNotNull(roomService.getAvailableRooms(bookingRoom, 10));
     }
 
 }

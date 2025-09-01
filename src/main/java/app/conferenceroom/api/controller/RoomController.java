@@ -1,13 +1,14 @@
 package app.conferenceroom.api.controller;
 
-import app.conferenceroom.api.dto.BookingRequestDto;
+import app.conferenceroom.api.dto.BookingRequestDTO;
+import app.conferenceroom.api.dto.RoomDTO;
 import app.conferenceroom.api.mapper.BookingMapper;
 import app.conferenceroom.api.mapper.RoomMapper;
-import app.conferenceroom.domain.service.RoomService;
-import app.conferenceroom.api.dto.RoomDto;
-import app.conferenceroom.infra.response.Response;
-import app.conferenceroom.infra.response.ResponseStatus;
+import app.conferenceroom.service.RoomService;
+import app.conferenceroom.api.infra.response.Response;
+import app.conferenceroom.api.infra.response.ResponseStatus;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,38 +16,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/conference-room")
+@RequestMapping("/api/room")
 @Slf4j
+@RequiredArgsConstructor
 public class RoomController {
 
     private final RoomService roomService;
-    private final RoomMapper roomMapper;
-    private final BookingMapper bookingMapper;
-
-    public RoomController(RoomService roomService, RoomMapper roomMapper, BookingMapper bookingMapper) {
-        this.roomService = roomService;
-        this.roomMapper = roomMapper;
-        this.bookingMapper = bookingMapper;
-    }
 
     @PostMapping("/search")
-    public ResponseEntity<Response<List<RoomDto>>> search(@RequestParam(value = "bestRoom", required = false, defaultValue = "false") boolean bestRoom, @Valid @RequestBody BookingRequestDto bookingRequestDto) {
+    public ResponseEntity<Response<List<RoomDTO>>> search(
+            @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
+            @Valid @RequestBody BookingRequestDTO bookingRequestDto) {
         log.info("RoomController - getAllRooms - STARTED");
-        var bookingModel = bookingMapper.toModel(bookingRequestDto);
-        var availableRooms = roomService.getAvailableRooms(bookingModel, bestRoom)
+        var bookingModel = BookingMapper.toBookingMetadata(bookingRequestDto);
+        var availableRooms = roomService.getAvailableRooms(bookingModel, limit)
                 .stream()
-                .map(roomMapper::toDto)
+                .map(RoomMapper::toDto)
                 .toList();
-        Response<List<RoomDto>> response = Response.<List<RoomDto>>builder().status(ResponseStatus.SUCCESS).data(availableRooms).build();
+        Response<List<RoomDTO>> response = Response.<List<RoomDTO>>builder().status(ResponseStatus.SUCCESS).data(availableRooms).build();
         log.info("RoomController - getAllRooms - ENDED");
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<Response<RoomDto>> getRoomDetailsByName(@RequestParam String name) {
+    public ResponseEntity<Response<RoomDTO>> getRoomByName(@RequestParam String name) {
         log.info("RoomController - getRoomDetailsByName - STARTED");
-        var roomDto = roomMapper.toDto(roomService.getRoomByName(name));
-        Response<RoomDto> response = Response.<RoomDto>builder().status(ResponseStatus.SUCCESS).data(roomDto).build();
+        var roomDto = RoomMapper.toDto(roomService.getRoomByName(name));
+        Response<RoomDTO> response = Response.<RoomDTO>builder().status(ResponseStatus.SUCCESS).data(roomDto).build();
         log.info("RoomController - getRoomDetailsByName - ENDED");
         return ResponseEntity.ok(response);
     }

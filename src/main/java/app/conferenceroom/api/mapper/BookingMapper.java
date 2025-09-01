@@ -1,20 +1,37 @@
 package app.conferenceroom.api.mapper;
 
-import app.conferenceroom.api.dto.BookingRequestDto;
-import app.conferenceroom.api.dto.BookingResponseDto;
-import app.conferenceroom.domain.model.BookingModel;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import app.conferenceroom.api.dto.BookingRequestDTO;
+import app.conferenceroom.api.dto.ExistingBookingDTO;
+import app.conferenceroom.api.dto.MeetingDTO;
+import app.conferenceroom.api.dto.TimeRangeDTO;
+import app.conferenceroom.service.model.CreateBookingCommand;
+import app.conferenceroom.service.model.BookingRecord;
+import app.conferenceroom.service.model.TimeRange;
 
-@Mapper(componentModel = "spring")
-public interface BookingMapper {
+public class BookingMapper {
 
-    @Mapping(source = "roomName", target = "roomModel.name")
-    @Mapping(source = "meetingRequestDto", target = "meetingModel")
-    BookingModel toModel(BookingRequestDto dto);
+    public static CreateBookingCommand toBookingMetadata(BookingRequestDTO bookingRequestDto) {
+        var timeRangeDTO = bookingRequestDto.timeRangeDTO();
+        return new CreateBookingCommand(
+                bookingRequestDto.roomName(),
+                new TimeRange(
+                        timeRangeDTO.startTime(),
+                        timeRangeDTO.endTime()),
+                bookingRequestDto.numberOfAttendees());
+    }
 
-    @Mapping(source = "roomModel.name", target = "roomName")
-    @Mapping(source = "meetingModel", target = "meetingResponseDto")
-    BookingResponseDto toResponseDto(BookingModel model);
+    public static ExistingBookingDTO toResponseDto(BookingRecord bookingRecord) {
+        var meetingTime = bookingRecord.meetingTime();
+        var timeRangeDTO = new TimeRangeDTO(meetingTime.startTime(), meetingTime.endTime());
 
+        var meetingDTO = new MeetingDTO(
+                bookingRecord.roomName(),
+                timeRangeDTO,
+                bookingRecord.numberOfAttendees());
+
+        return new ExistingBookingDTO(
+                bookingRecord.bookingReference(),
+                meetingDTO
+        );
+    }
 }
