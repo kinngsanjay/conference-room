@@ -4,11 +4,8 @@ import app.conferenceroom.validator.meetingrange.ValidTimeRange;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 
-public record BookingRequestDTO(
-        @JsonProperty("roomName")
-        String roomName,
+public record SearchRoomRequestDTO(
         @JsonProperty("timeRange")
         @ValidTimeRange
         TimeRangeDTO timeRangeDTO,

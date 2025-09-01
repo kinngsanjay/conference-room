@@ -1,10 +1,7 @@
 package app.conferenceroom.api.controller;
 
-import app.conferenceroom.api.dto.BookingRequestDto;
-import app.conferenceroom.api.dto.MeetingTimeRange;
-import app.conferenceroom.api.dto.RoomDetailsDto;
-import app.conferenceroom.api.dto.RoomDto;
-import app.conferenceroom.infra.response.Response;
+import app.conferenceroom.api.dto.*;
+import app.conferenceroom.api.infra.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,26 +19,25 @@ public class RoomControllerTest {
     @Autowired
     RoomController roomController;
 
-    private MeetingTimeRange getMeetingTimeRange(LocalTime startTime) {
-        return new MeetingTimeRange(startTime, startTime.plusMinutes(15));
+    private TimeRangeDTO getMeetingTimeRange(LocalTime startTime) {
+        return new TimeRangeDTO(startTime, startTime.plusMinutes(15));
     }
 
-    private BookingRequestDto getBookingDto(LocalTime startTime) {
-        return new BookingRequestDto(
-                "Inspire", new RoomDetailsDto(getMeetingTimeRange(startTime), 5));
+    private SearchRoomRequestDTO getSearchRoomRequestDTO(LocalTime startTime) {
+        return new SearchRoomRequestDTO(getMeetingTimeRange(startTime), 5);
     }
 
     @Test
-    public void testGetAllRooms() {
+    public void testSearch() {
         LocalTime time = LocalTime.of(22, 0, 0);
-        ResponseEntity<Response<List<RoomDto>>> response = roomController.getAllRooms(true, getBookingDto(time));
+        ResponseEntity<Response<List<RoomDTO>>> response = roomController.search(1, getSearchRoomRequestDTO(time));
         Assertions.assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
-    public void testGetRoomDetailsByName() {
-        ResponseEntity<Response<RoomDto>> response = roomController.getRoomDetailsByName("Inspire");
+    public void testSearchByName() {
+        ResponseEntity<Response<RoomDTO>> response = roomController.searchByName("Inspire");
         Assertions.assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }

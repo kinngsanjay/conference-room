@@ -59,22 +59,20 @@ maintenance:
 ```
 
 ## API Endpoints
-### 1. Fetch Available Conference Room (POST)
+### 1. Search Conference Room with limit (POST)
 > **Definition**: Fetch available conference rooms.
 
-**Endpoint**: `/api/conference-room?bestRoom=false`
+**Endpoint**: `/api/room/search?limit=1`
 
 **Body**:
 
 ```json
 {
-  "meetingDetails": {
-    "timeRange": {
-      "startTime": "23:00",
-      "endTime": "23:45"
-    },
-    "numberOfPeople": 2
-  }
+  "timeRange": {
+    "startTime": "22:45",
+    "endTime": "23:45"
+  },
+  "numberOfAttendees": 10
 }
 ```
 Response:
@@ -84,16 +82,40 @@ Response:
   "status": "success",
   "data": [
     {
-      "name": "Beauty",
-      "capacity": 7
-    },
-    {
       "name": "Inspire",
-      "capacity": 12
+      "capacity": 12,
+      "maintenanceTimings": [
+        {
+          "startTime": "09:00",
+          "endTime": "09:15"
+        },
+        {
+          "startTime": "13:00",
+          "endTime": "13:15"
+        },
+        {
+          "startTime": "17:00",
+          "endTime": "17:15"
+        }
+      ]
     },
     {
       "name": "Strive",
-      "capacity": 20
+      "capacity": 20,
+      "maintenanceTimings": [
+        {
+          "startTime": "09:00",
+          "endTime": "09:15"
+        },
+        {
+          "startTime": "13:00",
+          "endTime": "13:15"
+        },
+        {
+          "startTime": "17:00",
+          "endTime": "17:15"
+        }
+      ]
     }
   ]
 }
@@ -107,10 +129,10 @@ Sample Error Response:
   "errorMessage": "Entered Time is not suitable input"
 }
 ```
-### 2. Fetch Room Details by Name (GET)
+### 2. Search Room Details by Name (GET)
    Definition: Fetch room details by name.
 
-Endpoint: `/api/conference-room?name=Inspire`
+Endpoint: `/api/room/by-name?name=Inspire`
 
 Response:
 
@@ -141,40 +163,36 @@ Sample Error Response:
 
 ```json
 {
-  "status": "APPLICATION_ERROR",
+  "status": "error",
   "errorCode": "NO_SUCH_ROOM",
-  "errorMessage": "No room exist with this name or id"
+  "erroMessage": "No room exist with this name or id"
 }
 ```
 ### 3. Book a Room (POST)
    Definition: Book a conference room.
 
-Endpoint: `/api/conference-bookings`
+Endpoint: `/api/bookings`
 
 Body:
 
 ```json
 {
-  "meetingDetails": {
-    "timeRange": {
-      "startTime": "23:00",
-      "endTime": "23:45"
-    },
-    "numberOfPeople": 2
-  }
+  "timeRange": {
+    "startTime": "23:00",
+    "endTime": "23:45"
+  },
+  "numberOfAttendees": 2
 }
 ```
 OR
 ```json
 {
-  "roomName": "Amaze",
-  "meetingDetails": {
-    "timeRange": {
-      "startTime": "23:00",
-      "endTime": "23:45"
-    },
-    "numberOfPeople": 2
-  }
+  "roomName": "Beauty",
+  "timeRange": {
+    "startTime": "23:00",
+    "endTime": "23:45"
+  },
+  "numberOfAttendees": 2
 }
 ```
 Response:
@@ -183,15 +201,7 @@ Response:
 {
   "status": "success",
   "data": {
-    "bookingReference": "BR-1735253943981",
-    "roomName": "Amaze",
-    "roomDetailsDto": {
-      "timeRange": {
-        "startTime": "23:00",
-        "endTime": "23:45"
-      },
-      "numberOfPeople": 2
-    }
+    "bookingReference": "BR-1756744264252"
   }
 }
 ```
@@ -199,9 +209,9 @@ Sample Error Response:
 
 ```json
 {
-  "status": "APPLICATION_ERROR",
+  "status": "error",
   "errorCode": "UNABLE_TO_BOOK_ROOM",
-  "errorMessage": "Room is either booked or room name not correct"
+  "erroMessage": "Room is either booked or room name not correct"
 }
 ```
 ### 4. Fetch All Bookings within a Slot (POST)
@@ -222,25 +232,25 @@ Response:
 ```json
 [
   {
-    "bookingReference": "BR-1735253943981",
-    "roomName": "Amaze",
-    "roomDetailsDto": {
+    "bookingReference": "BR-1756744264252",
+    "meetingSummary": {
+      "roomName": "Beauty",
       "timeRange": {
         "startTime": "23:00",
         "endTime": "23:45"
       },
-      "numberOfPeople": 2
+      "numberOfAttendees": 2
     }
   },
   {
-    "bookingReference": "BR-1735254322510",
-    "roomName": "Strive",
+    "bookingReference": "BR-1735253943981",
+    "roomName": "Amaze",
     "roomDetailsDto": {
-      "timeRange": {
+      "timeRangeDTO": {
         "startTime": "23:00",
         "endTime": "23:45"
       },
-      "numberOfPeople": 2
+      "numberOfAttendees": 2
     }
   }
 ]
@@ -258,14 +268,16 @@ Sample Error Response:
 ### 5. Cancel a booking (DELETE)
 Definition: Cancel a booking using booking reference.
 
-Endpoint: `/api/conference-bookings/BR-1735226262451`
+Endpoint: `/api/bookings/BR-1756743577801`
 
 Response:
 
 ```json
 {
   "status": "success",
-  "data": "Conference Room Booking Cancelled"
+  "data": {
+    "status": true
+  }
 }
 ```
 Sample Error Response:

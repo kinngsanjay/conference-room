@@ -1,18 +1,13 @@
 package app.conferenceroom.db.mapper;
 
 import app.conferenceroom.db.entity.Room;
-import app.conferenceroom.domain.model.RoomModel;
-import org.springframework.stereotype.Component;
+import app.conferenceroom.service.model.RoomModel;
+import app.conferenceroom.service.model.TimeRange;
 
-import java.util.function.Function;
+import java.util.List;
 
-@Component
-public class RoomToModelMapper implements Function<Room, RoomModel> {
-    public RoomModel apply(Room room) {
-        var roomModel = new RoomModel();
-        roomModel.setRoomId(room.getRoomId());
-        roomModel.setName(room.getName());
-        roomModel.setCapacity(room.getCapacity());
-        return roomModel;
+public class RoomToModelMapper {
+    public static RoomModel toRoomModel(Room room, List<TimeRange> maintenanceTimings) {
+        return new RoomModel(room.getRoomId(), room.getName(), room.getCapacity(), maintenanceTimings);
     }
 }

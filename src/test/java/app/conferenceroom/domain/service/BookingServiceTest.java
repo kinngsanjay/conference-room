@@ -1,11 +1,12 @@
 package app.conferenceroom.domain.service;
 
-import app.conferenceroom.api.dto.MeetingTimeRange;
-import app.conferenceroom.api.dto.RoomDetailsDto;
-import app.conferenceroom.domain.enums.ErrorCode;
-import app.conferenceroom.domain.model.BookingModel;
-import app.conferenceroom.domain.model.RoomModel;
-import app.conferenceroom.infra.exception.ConferenceRoomException;
+import app.conferenceroom.service.BookingService;
+import app.conferenceroom.service.exception.BookingNotFoundException;
+import app.conferenceroom.service.exception.RoomNotAvailableException;
+import app.conferenceroom.service.model.CancelBookingCommand;
+import app.conferenceroom.service.model.CreateBookingCommand;
+import app.conferenceroom.service.model.SearchBookingsCommand;
+import app.conferenceroom.service.model.TimeRange;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,55 +20,52 @@ public class BookingServiceTest {
     @Autowired
     BookingService bookingService;
 
-    private MeetingTimeRange getMeetingTimeRange(LocalTime startTime) {
-        return new MeetingTimeRange(startTime, startTime.plusMinutes(15));
+    private TimeRange getMeetingTimeRange(LocalTime startTime) {
+        return new TimeRange(startTime, startTime.plusMinutes(15));
     }
 
-    private BookingModel getBooking(LocalTime startTime) {
-        return new BookingModel("",
-                new RoomModel(4L, "Strive"), new RoomDetailsDto(getMeetingTimeRange(startTime), 12));
+    private CreateBookingCommand getBooking(LocalTime startTime) {
+        return new CreateBookingCommand("Strive", getMeetingTimeRange(startTime), 12);
     }
 
     @Test
-    public void testBookRoom() {
+    public void testBookRoom() throws RoomNotAvailableException {
         LocalTime time = LocalTime.of(14, 0, 0);
         var bookingModel = getBooking(time);
-        bookingService.bookRoom(bookingModel);
-        assertNotNull(bookingModel.getBookingReference());
+        assertNotNull(bookingService.execute(bookingModel));
     }
 
     @Test
     public void testBookRoomWithNoAvailability() {
         LocalTime time = LocalTime.of(14, 0, 0);
-        var bookingModel = new BookingModel("",
-                new RoomModel(4L, "Strive"), new RoomDetailsDto(getMeetingTimeRange(time), 15));
-        ConferenceRoomException exception = assertThrows(ConferenceRoomException.class, () -> {
-            bookingService.bookRoom(bookingModel);
+        var bookingModel = new CreateBookingCommand( "Strive", getMeetingTimeRange(time), 15);
+        RoomNotAvailableException exception = assertThrows(RoomNotAvailableException.class, () -> {
+            bookingService.execute(bookingModel);
         });
-        assertEquals(ErrorCode.NO_ROOM_AVAILABLE.getErrorCode(), exception.getErrorCode());
     }
 
     @Test
-    public void testGetAllBookings() {
+    public void testGetAllBookings() throws RoomNotAvailableException, BookingNotFoundException {
         LocalTime time = LocalTime.of(14, 15, 0);
-        bookingService.bookRoom(getBooking(time));
-        assertFalse(bookingService.getBookingsByTime(getMeetingTimeRange(time)).isEmpty());
+        bookingService.execute(getBooking(time));
+        assertFalse(bookingService.execute(
+                new SearchBookingsCommand(getMeetingTimeRange(time)))
+                .existingBookings()
+                .isEmpty());
     }
 
     @Test
-    public void testCancelBooking() {
+    public void testCancelBooking() throws RoomNotAvailableException, BookingNotFoundException {
         LocalTime time = LocalTime.of(14, 45, 0);
         var bookingModel = getBooking(time);
-        bookingService.bookRoom(bookingModel);
-        assertEquals(bookingService.cancelBooking(bookingModel.getBookingReference()), "Conference Room Booking Cancelled");
+        var reference = bookingService.execute(bookingModel).reference();
+        assertEquals(bookingService.execute(new CancelBookingCommand(reference)).status(), true);
     }
 
     @Test
     public void testCancelBookingWithNoBookingInTimeRange() {
-        ConferenceRoomException exception = assertThrows(ConferenceRoomException.class, () -> {
-            bookingService.cancelBooking("2L");
+        BookingNotFoundException exception = assertThrows(BookingNotFoundException.class, () -> {
+            bookingService.execute(new CancelBookingCommand("2L"));
         });
-
-        assertEquals(ErrorCode.NO_BOOKING_FOUND.getErrorCode(), exception.getErrorCode());
     }
 }
