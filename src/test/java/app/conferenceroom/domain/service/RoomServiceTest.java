@@ -1,10 +1,10 @@
 package app.conferenceroom.domain.service;
 
-import app.conferenceroom.api.dto.BookingRequestDTO;
+import app.conferenceroom.api.dto.SearchRoomRequestDTO;
 import app.conferenceroom.api.dto.TimeRangeDTO;
 import app.conferenceroom.service.RoomService;
 import app.conferenceroom.service.exception.RoomNotExistException;
-import app.conferenceroom.service.model.CreateBookingCommand;
+import app.conferenceroom.service.model.SearchRoomsCommand;
 import app.conferenceroom.service.model.TimeRange;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,28 +24,28 @@ public class RoomServiceTest {
     }
 
     @Test
-    public void testGetRoomByName() {
-        assertEquals(roomService.getRoomByName("Inspire").roomId(), 3L);
+    public void testSearchRoomByName() {
+        assertEquals(roomService.searchRoomByName("Inspire").roomId(), 3L);
     }
 
     @Test
-    public void testGetRoomByNameWhichDoNotExist() {
+    public void testSearchRoomByNameWhichDoNotExist() {
         RoomNotExistException exception = assertThrows(RoomNotExistException.class, () -> {
-            roomService.getRoomByName("TestRoom");
+            roomService.searchRoomByName("TestRoom");
         });
     }
 
     @Test
-    public void testGetRoomByName1() {
+    public void testSearchRoomByTimeAndAttendee() {
         LocalTime time = LocalTime.of(14, 0, 0);
-        BookingRequestDTO bookingRequestDto = new BookingRequestDTO("Strive", getMeetingTimeRange(time), 12);
-        var bookingRoom = new CreateBookingCommand(
-                bookingRequestDto.roomName(),
+        SearchRoomRequestDTO searchRoomRequestDTO = new SearchRoomRequestDTO(
+                getMeetingTimeRange(time), 12);
+        var bookingRoom = new SearchRoomsCommand(
                 new TimeRange(
-                        bookingRequestDto.timeRangeDTO().startTime(),
-                        bookingRequestDto.timeRangeDTO().endTime()),
-                bookingRequestDto.numberOfAttendees());
-        assertNotNull(roomService.getAvailableRooms(bookingRoom, 10));
+                        searchRoomRequestDTO.timeRangeDTO().startTime(),
+                        searchRoomRequestDTO.timeRangeDTO().endTime()),
+                searchRoomRequestDTO.numberOfAttendees());
+        assertNotNull(roomService.execute(bookingRoom, 10));
     }
 
 }

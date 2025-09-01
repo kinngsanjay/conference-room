@@ -20,11 +20,11 @@ public class TimeRangeValidator implements ConstraintValidator<ValidTimeRange, T
     @Override
     public boolean isValid(TimeRangeDTO timeRangeDTO, ConstraintValidatorContext context) {
         if (timeRangeDTO == null) {
-            addErrorMessage(context, "Time Range cannot be null");
+            addErrorMessage(context, "Time Range should be provided");
             return false;
         }
         if (timeRangeDTO.startTime() == null || timeRangeDTO.endTime() == null) {
-            addErrorMessage(context, "Start Time or End Time cannot be null");
+            addErrorMessage(context, "Start Time or End Time should be provided");
             return false;
         }
         return validateTimeRange(timeRangeDTO, context);

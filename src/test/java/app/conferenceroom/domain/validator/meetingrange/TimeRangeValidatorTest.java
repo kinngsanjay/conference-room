@@ -9,12 +9,16 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalTime;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.mockStatic;
 
 @SpringBootTest
 public class TimeRangeValidatorTest {
@@ -34,7 +38,7 @@ public class TimeRangeValidatorTest {
     public void testIsValidWithNullMeetingTimeRange() {
         Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(null));
         assertFalse(violations.isEmpty());
-        assertEquals("Time Range cannot be null", violations.iterator().next().getMessage());
+        assertEquals("Time Range should be provided", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -45,7 +49,7 @@ public class TimeRangeValidatorTest {
 
         Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
         assertFalse(violations.isEmpty());
-        assertEquals("Start Time or End Time cannot be null", violations.iterator().next().getMessage());
+        assertEquals("Start Time or End Time should be provided", violations.iterator().next().getMessage());
 
         startTime = LocalTime.of(21, 0, 15);
         endTime = null;
@@ -53,42 +57,48 @@ public class TimeRangeValidatorTest {
 
         violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
         assertFalse(violations.isEmpty());
-        assertEquals("Start Time or End Time cannot be null", violations.iterator().next().getMessage());
+        assertEquals("Start Time or End Time should be provided", violations.iterator().next().getMessage());
     }
 
     @Test
     public void testIsValidWithTimeNotSuitable() {
-        LocalTime startTime = LocalTime.of(21, 0, 15);
-        LocalTime endTime = LocalTime.of(22, 0, 0);
-        TimeRangeDTO timeRangeDTO = new TimeRangeDTO(startTime, endTime);
+        LocalTime mockNow = LocalTime.of(20, 0);
 
-        Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
-        assertFalse(violations.isEmpty());
-        assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
+        try (MockedStatic<LocalTime> mockedLocalTime = mockStatic(LocalTime.class, CALLS_REAL_METHODS)) {
 
-        startTime = LocalTime.of(21, 15, 0);
-        endTime = LocalTime.of(22, 15, 15);
-        timeRangeDTO = new TimeRangeDTO(startTime, endTime);
+            mockedLocalTime.when(LocalTime::now).thenReturn(mockNow);
+            LocalTime startTime = LocalTime.of(21, 0, 15);
+            LocalTime endTime = LocalTime.of(22, 0, 0);
+            TimeRangeDTO timeRangeDTO = new TimeRangeDTO(startTime, endTime);
 
-        violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
-        assertFalse(violations.isEmpty());
-        assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
+            Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
+            assertFalse(violations.isEmpty());
+            assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
 
-        startTime = LocalTime.of(21, 16, 0);
-        endTime = LocalTime.of(22, 15, 0);
-        timeRangeDTO = new TimeRangeDTO(startTime, endTime);
+            startTime = LocalTime.of(21, 15, 0);
+            endTime = LocalTime.of(22, 15, 15);
+            timeRangeDTO = new TimeRangeDTO(startTime, endTime);
 
-        violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
-        assertFalse(violations.isEmpty());
-        assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
+            violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
+            assertFalse(violations.isEmpty());
+            assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
 
-        startTime = LocalTime.of(21, 15, 0);
-        endTime = LocalTime.of(22, 16, 0);
-        timeRangeDTO = new TimeRangeDTO(startTime, endTime);
+            startTime = LocalTime.of(21, 16, 0);
+            endTime = LocalTime.of(22, 15, 0);
+            timeRangeDTO = new TimeRangeDTO(startTime, endTime);
 
-        violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
-        assertFalse(violations.isEmpty());
-        assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
+            violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
+            assertFalse(violations.isEmpty());
+            assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
+
+            startTime = LocalTime.of(21, 15, 0);
+            endTime = LocalTime.of(22, 16, 0);
+            timeRangeDTO = new TimeRangeDTO(startTime, endTime);
+
+            violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
+            assertFalse(violations.isEmpty());
+            assertEquals("Entered Time is not suitable input", violations.iterator().next().getMessage());
+        }
     }
 
     @Test
@@ -113,19 +123,27 @@ public class TimeRangeValidatorTest {
 
     @Test
     public void testValidateTimeRangeWithCorrectTime() {
-        LocalTime startTime = LocalTime.of(21, 0, 0);
-        LocalTime endTime = LocalTime.of(22, 0, 0);
-        TimeRangeDTO timeRangeDTO = new TimeRangeDTO(startTime, endTime);
+        LocalTime mockNow = LocalTime.of(20, 0);
 
-        Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
-        assertTrue(violations.isEmpty());
+        try (MockedStatic<LocalTime> mockedLocalTime = mockStatic(LocalTime.class, CALLS_REAL_METHODS)) {
 
-        startTime = LocalTime.of(21, 15, 0);
-        endTime = LocalTime.of(22, 15, 0);
-        timeRangeDTO = new TimeRangeDTO(startTime, endTime);
+            mockedLocalTime.when(LocalTime::now).thenReturn(mockNow);
+            LocalTime startTime = LocalTime.of(21, 0, 0);
+            LocalTime endTime = LocalTime.of(22, 0, 0);
+            TimeRangeDTO timeRangeDTO = new TimeRangeDTO(startTime, endTime);
 
-        violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
-        assertTrue(violations.isEmpty());
+            Set<ConstraintViolation<MeetingTimeRangeWrapper>> violations = validator.validate(
+                    new MeetingTimeRangeWrapper(timeRangeDTO));
+            assertTrue(violations.isEmpty());
+
+            startTime = LocalTime.of(21, 15, 0);
+            endTime = LocalTime.of(22, 15, 0);
+            timeRangeDTO = new TimeRangeDTO(startTime, endTime);
+
+            violations = validator.validate(new MeetingTimeRangeWrapper(timeRangeDTO));
+            assertTrue(violations.isEmpty());
+
+        }
     }
 
     @Test

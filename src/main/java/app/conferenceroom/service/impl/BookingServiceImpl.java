@@ -26,10 +26,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingCreationResult execute(CreateBookingCommand bookingCommand)
-            throws RoomNotAvailableException {
+    public BookingCreationResult execute(CreateBookingCommand bookingCommand) throws RoomNotAvailableException {
         log.info("bookRoom started: {}", bookingCommand);
-        var availableRooms = roomAvailabilityService.getAllAvailableRooms(bookingCommand);
+        var availableRooms = roomAvailabilityService.searchAvailableRooms(
+                bookingCommand.meetingTime(), bookingCommand.numberOfAttendees());
         log.info("Available Rooms: {}", availableRooms);
         if(availableRooms.isEmpty()) {
             throw new RoomNotAvailableException("Room %s is not available at time %s".formatted(

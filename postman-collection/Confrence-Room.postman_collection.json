@@ -1,19 +1,19 @@
 {
 	"info": {
-		"_postman_id": "9cf68ed8-c0a6-484f-9caa-5899c093fb5c",
+		"_postman_id": "5fa8fc5a-9979-45a9-ac30-368a856a4d03",
 		"name": "Confrence-Room",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27476498"
 	},
 	"item": [
 		{
-			"name": "SearchBestRoom",
+			"name": "BookRoom",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"meetingDetails\": {\n        \"timeRange\": {\n            \"startTime\": \"22:45\",\n            \"endTime\": \"23:45\"\n        },\n        \"numberOfPeople\": 2\n    }\n}",
+					"raw": "{\n    \"roomName\": \"Beauty\",\n    \"timeRange\": {\n        \"startTime\": \"23:00\",\n        \"endTime\": \"23:45\"\n    },\n    \"numberOfAttendees\": 2\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,7 +21,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/conference-room?bestRoom=false",
+					"raw": "http://localhost:8080/api/bookings",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -29,20 +29,44 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"conference-room"
-					],
-					"query": [
-						{
-							"key": "bestRoom",
-							"value": "false"
-						}
+						"bookings"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "RoomDetail",
+			"name": "SearchRoomWithLimit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"timeRange\": {\n        \"startTime\": \"22:45\",\n        \"endTime\": \"23:45\"\n    },\n    \"numberOfAttendees\": 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/room/search",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"room",
+						"search"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchRoomByName",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -59,7 +83,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/conference-room?name=Inspire",
+					"raw": "http://localhost:8080/api/room/by-name?name=Inspire",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -67,42 +91,14 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"conference-room"
+						"room",
+						"by-name"
 					],
 					"query": [
 						{
 							"key": "name",
 							"value": "Inspire"
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "RoomBooking",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"roomName\": \"Beauty\",\n    \"meetingDetails\": {\n        \"timeRange\": {\n            \"startTime\": \"23:00\",\n            \"endTime\": \"23:45\"\n        },\n        \"numberOfPeople\": 2\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/conference-bookings",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"conference-bookings"
 					]
 				}
 			},
@@ -123,7 +119,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/conference-bookings/search",
+					"raw": "http://localhost:8080/api/bookings/search",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -131,7 +127,7 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"conference-bookings",
+						"bookings",
 						"search"
 					]
 				}
@@ -139,7 +135,7 @@
 			"response": []
 		},
 		{
-			"name": "Cancel",
+			"name": "CancelBooking",
 			"request": {
 				"method": "DELETE",
 				"header": [],
@@ -153,7 +149,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/conference-bookings/BR-1735254322510",
+					"raw": "http://localhost:8080/api/bookings/BR-1756743577801",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -161,8 +157,8 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"conference-bookings",
-						"BR-1735254322510"
+						"bookings",
+						"BR-1756743577801"
 					]
 				}
 			},
