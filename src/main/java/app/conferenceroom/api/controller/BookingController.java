@@ -9,6 +9,7 @@ import app.conferenceroom.service.model.SearchBookingsCommand;
 import app.conferenceroom.service.model.TimeRange;
 import app.conferenceroom.service.BookingService;
 import app.conferenceroom.api.infra.response.Response;
+import app.conferenceroom.validator.meetingrange.ValidTimeRange;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class BookingController {
     }
 
     @PostMapping("/search")
-    public List<ExistingBookingDTO> search(@RequestBody @Valid TimeRangeDTO timeRangeDTO)
+    public List<ExistingBookingDTO> search(@RequestBody @ValidTimeRange TimeRangeDTO timeRangeDTO)
             throws BookingNotFoundException {
         log.info("BookingController - getBookingsByTime: {}", timeRangeDTO);
         return bookingService.execute(

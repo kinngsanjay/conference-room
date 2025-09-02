@@ -50,7 +50,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/room/search",
+					"raw": "http://localhost:8080/api/room/search?limit=2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -60,6 +60,12 @@
 						"api",
 						"room",
 						"search"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "2"
+						}
 					]
 				}
 			},
@@ -83,7 +89,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/room/by-name?name=Inspire",
+					"raw": "http://localhost:8080/api/room/by-name/Inspire",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -92,13 +98,8 @@
 					"path": [
 						"api",
 						"room",
-						"by-name"
-					],
-					"query": [
-						{
-							"key": "name",
-							"value": "Inspire"
-						}
+						"by-name",
+						"Inspire"
 					]
 				}
 			},

@@ -38,8 +38,8 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/by-name")
-    public ResponseEntity<Response<RoomDTO>> searchByName(@RequestParam String name) {
+    @GetMapping("/by-name/{name}")
+    public ResponseEntity<Response<RoomDTO>> searchByName(@PathVariable String name) {
         log.info("RoomController - getRoomDetailsByName - STARTED");
         var roomDto = RoomMapper.toDto(roomService.searchRoomByName(name));
         Response<RoomDTO> response = Response.<RoomDTO>builder().status(ResponseStatus.SUCCESS).data(roomDto).build();
